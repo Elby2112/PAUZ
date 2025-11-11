@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* If not using Tailwind build tools, import the generated Tailwind CSS instead */
+@import url('/path/to/generated/tailwind.css');
+
+body {
+  background-color: var(--background);
+  color: var(--textColor);
+  font-family: 'Inter', sans-serif;
+}

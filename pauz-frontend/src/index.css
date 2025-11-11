@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter:wght@400;500&display=swap');
+
+/* Tailwind base styles */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Global font variables */
+:root {
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* Global defaults */
+body {
+  font-family: var(--font-body);
+  background-color: #faf8f5; /* soft beige background for now */
+  color: #222;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
