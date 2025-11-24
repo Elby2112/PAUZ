@@ -1,0 +1,102 @@
+:root{
+  --primary: #5E8FA8;
+  --secondary: #E6E8EA;
+  --accent: #B49FCC;
+  --text: #2E2E35;
+  --bg: #fff4ea;
+  --card-bg: #ffffff;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.garden-section {
+  min-height: 70vh;
+  padding: 40px 20px 80px;
+  font-family: var(--font-body);
+  background: linear-gradient(
+    180deg,
+    #fff4ea 0%,
+    #ffe3d6 35%,
+    #f5d6e8 70%,
+    #ede4ff 100%
+  );
+  position: relative;
+  overflow: hidden;
+  color: var(--text);
+  padding-top: 120px;
+}
+
+.garden-sky {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.6), transparent 8%),
+              radial-gradient(circle at 90% 30%, rgba(255,255,255,0.5), transparent 12%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+.garden-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.garden-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.garden-title {
+  font-size: 34px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.garden-sub {
+  margin-top: 8px;
+  color: rgba(46,46,53,0.7);
+  font-size: 14px;
+}
+
+.garden-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 26px;
+  align-items: end;
+  padding: 10px 6px 40px;
+}
+
+.garden-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.garden-particles .p {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 230, 170, 0.9);
+  border-radius: 50%;
+  filter: blur(6px);
+  opacity: 0.85;
+  animation: float 6s linear infinite;
+}
+.garden-particles .p1 { left: 12%; top: 25%; animation-delay: 0s; transform: scale(1.1); }
+.garden-particles .p2 { left: 80%; top: 15%; animation-delay: 1.3s; transform: scale(0.9); }
+.garden-particles .p3 { left: 45%; top: 55%; animation-delay: 2.1s; transform: scale(0.8); }
+.garden-particles .p4 { left: 70%; top: 70%; animation-delay: 3.6s; transform: scale(1.2); }
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-18px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.8; }
+}
+
+@media (max-width: 520px) {
+  .garden-title { font-size: 28px; }
+  .garden-grid { gap: 18px; }
+}

@@ -1,0 +1,47 @@
+.footer {
+  background-color: #fff4ea; /* soft pastel background */
+  color: #2E2E35;
+  font-family: var(--font-body);
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #B49FCC; /* subtle accent line */
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+/* Logo */
+.footer-left .footer-logo {
+  height: 36px;
+  object-fit: contain;
+}
+
+/* Center tagline */
+.footer-center {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #5E8FA8;
+  margin: 8px 0;
+}
+
+/* Right copyright */
+.footer-right {
+  font-size: 14px;
+  text-align: right;
+  color: #2E2E35;
+}
+
+/* Responsive for small screens */
+@media (max-width: 640px) {
+  .footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .footer-right {
+    text-align: center;
+  }
+}

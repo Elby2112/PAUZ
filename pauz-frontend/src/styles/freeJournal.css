@@ -1,0 +1,585 @@
+/* ================== CONTAINER ================== */
+.freejournal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #fff4ea; /* compatible background */
+  font-family: "Inter", sans-serif;
+  color: #2e2e35;
+  overflow: hidden;
+  padding: 20px;
+  padding-top: 100px;
+}
+
+/* ================== TOOLBAR ================== */
+.fj-toolbar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  animation: fadeSlide 0.6s ease forwards;
+  opacity: 0;
+}
+
+.fj-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #f8f6fa, #ece7f1);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+
+}
+
+/* ICON BUTTONS */
+.fj-icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2dceb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
+}
+
+.fj-icon-btn img {
+  width: 22px;
+  height: 22px;
+  transition: 0.25s ease;
+}
+
+.fj-icon-btn.active {
+  background: #5e8fa8;
+}
+
+.fj-icon-btn.active img.active-icon {
+  filter: brightness(1) invert(0); /* icon stays dark so visible */
+}
+
+.fj-icon-btn:hover {
+  transform: translateY(-3px);
+  background: #f0e8fa;
+  box-shadow: 0 6px 14px rgba(140, 110, 148, 0.25);
+}
+
+/* REFLECT WITH AI BUTTON */
+.fj-ai-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #8c6e94;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.fj-ai-btn:hover {
+  background: #b29bc1;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(140, 110, 148, 0.25);
+}
+
+.fj-ai-btn img.fj-ai-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(1) invert(1);
+  transition: 0.2s ease;
+}
+
+.fj-ai-btn:hover img.fj-ai-icon {
+  transform: rotate(8deg) scale(1.1);
+}
+
+/* ================== JOURNAL PAGE ================== */
+.fj-journal-page {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0 40px 20px 40px;
+  box-sizing: border-box;
+}
+
+.fj-paper {
+  width: 80%;
+  max-width: 800px;
+  height: 90%;
+  background: repeating-linear-gradient(
+      white,
+      white 36px,
+      #e9e9e9 37px
+  );
+  border-radius: 8px;
+  padding: 32px 40px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow-y: auto;
+}
+
+/* DATE */
+.fj-paper-date {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+  position: absolute;
+  top: 16px;
+  left: 32px;
+}
+
+/* TEXTAREA */
+.fj-textarea {
+  width: 100%;
+  min-height: 500px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  line-height: 36px;
+  resize: none;
+  font-family: "Inter", sans-serif;
+  padding-top: 40px;
+  margin-bottom: 20px;
+}
+
+/* VOICE AREA */
+.fj-voice-area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fj-record-btn {
+  background: #ffcbc4;
+  border: 1px solid #e8aaa2;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.fj-record-btn:hover {
+  background: #ffbdb3;
+}
+
+/* ================== AI POPUP ================== */
+.fj-ai-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.fj-ai-box {
+  width: 360px;
+  background: #fff9ec;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.fj-close-ai {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: #d3e8ff;
+  border: 1px solid #9fc7ff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.fj-close-ai:hover {
+  background: #c4ddff;
+}
+
+/* ================== ANIMATIONS ================== */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ================== JOURNAL PAGE ================== */
+.fj-journal-page {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0 40px 20px 40px;
+  box-sizing: border-box;
+}
+
+/* ================== PAPER (JOURNAL) ================== */
+.fj-paper {
+  width: 80%;
+  max-width: 1000px;
+  height: 90%;
+  background: repeating-linear-gradient(
+      white,
+      white 36px,
+      #e9e9e9 37px
+  );
+  border-radius: 8px;
+  padding: 48px 40px 32px 40px; /* more padding at top for date */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow-y: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fj-paper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ================== DATE ================== */
+.fj-paper-date {
+  font-size: 14px; /* smaller than before */
+  font-weight: 500;
+  color: #777; /* softer than dark gray */
+  position: absolute;
+  top: 16px;
+  left: 32px;
+}
+
+/* ================== TEXTAREA ================== */
+.fj-textarea {
+  width: 100%;
+  min-height: 500px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  line-height: 38px; /* slightly bigger for readability */
+  resize: none;
+  font-family: "Inter", sans-serif;
+  padding-top: 40px;
+  margin-bottom: 20px;
+}
+.fj-icon-btn.active {
+  background: linear-gradient(135deg, #d8c1e1, #b49fcc); /* pastel purple gradient */
+  color: #fff;
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(180, 159, 204, 0.4); /* soft glow effect */
+  border: 1px solid rgba(180, 159, 204, 0.6);
+}
+
+.fj-icon-btn.active img {
+  filter: brightness(0) invert(1); /* white icon */
+  transition: transform 0.2s ease;
+}
+
+.fj-icon-btn.active:hover img {
+  transform: rotate(10deg) scale(1.1); /* playful little movement */
+}
+
+/* ================== AI OVERLAY ================== */
+.fj-ai-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45); /* slightly darker for focus */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+/* AI BOX */
+.fj-ai-box {
+  width: 600px; /* bigger container */
+  max-width: 95%;
+  max-height: 85%;
+  background: #fff9ec;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  animation: fadeInScale 0.3s ease forwards;
+}
+
+/* AI TITLE */
+.fj-ai-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #8c6e94;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* Intro text */
+.fj-ai-intro {
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Content sections */
+.fj-ai-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.fj-ai-section h4 {
+  font-size: 18px;
+  color: #8c6e94;
+  margin-bottom: 6px;
+}
+
+.fj-ai-section p, .fj-ai-section ul {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.fj-ai-section ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+/* Close button */
+.fj-close-ai {
+  align-self: center;
+  padding: 12px 24px;
+  background: #8c6e94;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fj-close-ai:hover {
+  background: #b29bc1;
+  transform: translateY(-2px);
+}
+
+/* AI LOADING */
+.fj-ai-loading {
+  font-size: 20px;
+  color: #8c6e94;
+  text-align: center;
+  padding: 60px 0;
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+/* ================== ANIMATIONS ================== */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95);}
+  to { opacity: 1; transform: scale(1);}
+}
+
+@keyframes pulse {
+  0% {opacity: 0.4;}
+  50% {opacity: 1;}
+  100% {opacity: 0.4;}
+}
+
+/* ================== CLOSE ICON ================== */
+.fj-ai-close-icon {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  color: #8c6e94;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fj-ai-close-icon:hover {
+  color: #b29bc1;
+  transform: rotate(90deg) scale(1.2);
+}
+
+/* ================== ENHANCED LOADING ================== */
+.fj-ai-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  gap: 16px;
+}
+
+.fj-ai-spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #f3eaea;
+  border-top: 6px solid #8c6e94;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* text under spinner */
+.fj-ai-loading p {
+  font-size: 18px;
+  color: #8c6e94;
+  text-align: center;
+}
+
+/* ================== SPINNER ANIMATION ================== */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ================== VOICE RECORDING OVERLAY ================== */
+/* ================== VOICE RECORDING OVERLAY ================== */
+.fj-voice-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 244, 234, 0.5); /* soft journal-like color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 20;
+}
+
+.fj-voice-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fj-voice-box {
+  background: #fff;
+  padding: 40px 32px;
+  border-radius: 20px;
+  text-align: center;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  position: relative;
+  animation: popIn 0.5s ease forwards;
+}
+
+.fj-voice-visual-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.fj-voice-icon {
+  width: 50px;
+  height: 50px;
+  animation: pulseMic 1.2s infinite ease-in-out;
+}
+
+.fj-voice-dots-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex: 1;
+  position: relative;
+}
+
+.fj-voice-dots-row span {
+  width: 12px;
+  height: 12px;
+  background: #8c6e94;
+  border-radius: 50%;
+  animation: moveDotsToRight 1.2s infinite ease-in-out;
+}
+
+.fj-voice-dots-row span:nth-child(2) { animation-delay: 0.2s; }
+.fj-voice-dots-row span:nth-child(3) { animation-delay: 0.4s; }
+
+.fj-journal-icon {
+  width: 40px;
+  height: 40px;
+  /* subtle glow when dots reach it (optional enhancement) */
+  transition: box-shadow 0.3s ease;
+}
+
+.fj-voice-description {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.fj-voice-finish {
+  background: #8c6e94;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  margin-bottom: 10px;
+}
+
+.fj-voice-finish:hover {
+  background: #b29bc1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(140, 110, 148, 0.25);
+}
+
+.fj-voice-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 24px;
+  color: #8c6e94;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fj-voice-close:hover {
+  color: #b29bc1;
+  transform: rotate(90deg) scale(1.2);
+}
+
+/* ================== ANIMATIONS ================== */
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulseMic {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes moveDotsToRight {
+  0% { transform: translateX(0) scale(0.8); opacity: 0.6; }
+  50% { transform: translateX(20px) scale(1); opacity: 1; }
+  100% { transform: translateX(0) scale(0.8); opacity: 0.6; }
+}

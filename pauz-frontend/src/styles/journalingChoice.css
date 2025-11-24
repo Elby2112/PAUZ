@@ -1,0 +1,298 @@
+/* ================== GENERAL STYLES ================== */
+.journaling-section {
+  padding: 60px 20px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff4ea;
+}
+
+.journaling-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #2E2E35;
+}
+
+/* ================== MAIN CHOICE BUTTONS ================== */
+.journaling-options {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.journaling-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  min-width: 320px;
+  border: 2px solid #E6E8EA;
+  border-radius: 16px;
+  background-color: #3A3A4C;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.journaling-option:hover,
+.journaling-option.selected {
+  border-color: #5E8FA8;
+  background-color: #5E8FA8;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.option-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.option-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.option-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #F4F6F7;
+}
+
+.option-arrow {
+  font-size: 26px;
+  color: #F4F6F7;
+  font-weight: bold;
+}
+
+/* ================== MODAL OVERLAY ================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  overflow: visible;
+}
+
+/* ================== MODAL STYLES ================== */
+.journaling-modal {
+  background-color: #2E2E35;
+  color: white;
+  border-radius: 20px;
+  width: 700px;
+  height: 450px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px;
+  overflow: visible;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  gap: 20px;
+}
+
+/* ===== Guided Journal Modal (clean merged version) ===== */
+.journaling-modal.guided-modal {
+  background-color: #B49FCC;
+  width: 700px !important;
+  min-width: 700px !important;
+  height: 450px !important;
+  min-height: 450px !important;
+  padding: 40px !important;
+}
+
+/* ================== LOGO HALF OUTSIDE ================== */
+.modal-logo-wrapper {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.modal-logo {
+  height: 120px;
+  width: auto;
+}
+
+/* ================== MODAL CONTENT ================== */
+.modal-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #F4F6F7;
+  margin-bottom: 0;
+}
+
+.journaling-modal.guided-modal .modal-title {
+  color: #4A3C70;
+}
+
+.modal-subtitle {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #F4F6F7;
+}
+
+.modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.modal-list li {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  color: #F4F6F7;
+}
+
+.feature-icon {
+  margin-right: 12px;
+  font-size: 24px;
+}
+
+/* ================== BUTTONS HALF OUTSIDE ================== */
+.start-now-btn,
+.proceed-btn {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 16px 36px;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.start-now-btn {
+  background-color: #5E8FA8;
+  color: #F4F6F7;
+}
+
+.start-now-btn:hover {
+  background-color: #2E2E35;
+}
+
+.journaling-modal.guided-modal .start-now-btn {
+  background-color: #9A74B2;
+}
+
+.proceed-btn {
+  background-color: #9A74B2;
+  color: #F4F6F7;
+}
+
+.proceed-btn:hover {
+  background-color: #4A3C70;
+}
+
+.proceed-btn:disabled {
+  background-color: #C7C7D3;
+  cursor: not-allowed;
+}
+
+/* ================== ADDITIONAL BUTTONS ================== */
+.life-areas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 30px;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.area-btn {
+  background-color: #F4F6F7;
+  color: #2E2E35;
+  border: 1px solid #E6E8EA;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.area-btn:hover,
+.area-btn.selected {
+  background-color: #5E8FA8;
+  color: #F4F6F7;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 32px;
+  font-weight: 300;
+  cursor: pointer;
+  color: #F4F6F7;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0.8;
+  z-index: 50;
+}
+
+.modal-close:hover {
+  transform: rotate(90deg) scale(1.1);
+  opacity: 1;
+}
+
+.journaling-modal.guided-modal {
+  color: #3A2B52;
+}
+
+.journaling-modal.guided-modal .modal-title {
+  color: #3A2B52;
+}
+
+.journaling-modal.guided-modal .modal-subtitle {
+  color: #3A2B52;
+}
+
+.journaling-modal.guided-modal .modal-list li {
+  color: #3A2B52;
+}
+/* Category selection styles */
+.category-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.category-btn {
+  background-color: #f4f6f7;
+  color: #2e2e35;
+  border: 1px solid #e6e8ea;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.category-btn:hover,
+.category-btn.selected {
+  background-color: #4A3C70;
+  color: #f4f6f7;
+}
+
+/* Category confirmation styles */
+.category-confirmation {
+  margin-top: 20px;
+  text-align: center;
+}

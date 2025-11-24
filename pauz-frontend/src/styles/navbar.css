@@ -1,0 +1,137 @@
+/* Navbar */
+.navbar {
+  background-color: #fff4ea;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: none; /* flat at top */
+}
+
+.navbar-scrolled {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12); /* shadow appears when scrolled */
+}
+
+
+
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 18px; /* taller navbar */
+}
+
+.navbar-logo img {
+  height: 55px; /* adjust logo size */
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo img:hover {
+  transform: scale(1.05);
+}
+
+/* Desktop links */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+  align-items: center;
+}
+
+.navbar-links li a, .dropdown-title {
+  text-decoration: none;
+  color: #2e2e35;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+  color: #5E8FA8;
+}
+
+/* Dropdown */
+.navbar-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff4ea;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  overflow: hidden;
+  min-width: 160px;
+  animation: dropdownFade 0.2s ease-out;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 16px;
+  font-weight: 500;
+  color: #2e2e35;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu li a:hover {
+  background: #5E8FA8;
+  color: white;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Hamburger (Mobile) */
+.navbar-hamburger {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.navbar-mobile-menu {
+  position: absolute;
+  top: 76px; /* matches taller navbar */
+  right: 16px;
+  background: #fff4ea;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  list-style: none;
+  margin: 0;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile links */
+.navbar-mobile-menu li a {
+  text-decoration: none;
+  color: #2e2e35;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-mobile-menu li a:hover {
+  color: #5E8FA8;
+}

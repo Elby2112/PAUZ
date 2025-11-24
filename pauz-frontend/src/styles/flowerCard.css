@@ -1,0 +1,167 @@
+/* flowerCard.css */
+:root{
+  --card-radius: 18px;
+}
+
+/* base card */
+.flower-card {
+  width: 140px;
+  min-height: 170px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+  border-radius: var(--card-radius);
+  padding: 12px 12px 18px;
+  box-shadow: 0 6px 18px rgba(46,46,53,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s;
+  transform-origin: center bottom;
+  user-select: none;
+
+  /* grow animation delay from inline style var --delay */
+  opacity: 0;
+  transform: translateY(18px) scale(0.92);
+  animation: growUp 520ms cubic-bezier(.2,.85,.25,1) forwards;
+  animation-delay: var(--delay, 0s);
+}
+.flower-card:focus { outline: none; box-shadow: 0 10px 26px rgba(94,143,168,0.12); }
+
+@keyframes growUp {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* bubble with emoji */
+.flower-bubble {
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 6px;
+  box-shadow: 0 6px 18px rgba(94,143,168,0.06), inset 0 -6px 18px rgba(255,255,255,0.35);
+  transition: transform 320ms ease;
+}
+
+.flower-emoji { font-size: 36px; transform: translateY(-2px); }
+
+/* playful petals behind the bubble */
+.petals {
+  position: absolute;
+  inset: -8px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.9;
+}
+.petals span {
+  width: 18px;
+  height: 32px;
+  border-radius: 12px 12px 6px 6px;
+  display: block;
+  position: absolute;
+  transform-origin: bottom center;
+}
+.petals span:nth-child(1) { transform: rotate(0deg) translateY(-8px) translateX(0); left: 50%; top: 8px; }
+.petals span:nth-child(2) { transform: rotate(45deg) translateY(-6px); left: 12%; top: 20px; }
+.petals span:nth-child(3) { transform: rotate(-45deg) translateY(-6px); right: 12%; top: 20px; }
+.petals span:nth-child(4) { transform: rotate(90deg) translateY(-10px); left: 50%; top: 28px; }
+
+/* info */
+.flower-info {
+  margin-top: 10px;
+  text-align: center;
+}
+.flower-mood {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+.flower-date {
+  font-size: 12px;
+  color: rgba(46,46,53,0.55);
+  margin-top: 4px;
+}
+
+/* stem */
+.flower-stem {
+  position: absolute;
+  bottom: -18px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  justify-content: center;
+  pointer-events: none;
+}
+.stem-line {
+  width: 4px;
+  height: 36px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(122,181,123,1), rgba(80,140,95,1));
+  transform-origin: top;
+  animation: sway 3.6s ease-in-out infinite;
+  box-shadow: 0 2px 6px rgba(30,80,40,0.06);
+}
+.leaf {
+  width: 18px;
+  height: 10px;
+  background: linear-gradient(90deg, rgba(122,181,123,1), rgba(80,140,95,1));
+  border-radius: 8px;
+  transform: rotate(-20deg) translateY(-6px);
+  box-shadow: 0 2px 6px rgba(30,80,40,0.06);
+}
+
+/* small sway for a gentle alive effect */
+@keyframes sway {
+  0% { transform: translateX(0) rotate(0deg); }
+  50% { transform: translateX(2px) rotate(1.2deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+/* hover interactions */
+.flower-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(46,46,53,0.12);
+}
+.flower-card:hover .flower-bubble {
+  transform: translateY(-6px) scale(1.04);
+  transition: transform 260ms ease;
+}
+
+/* expanded note popup */
+.flower-note {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 12px);
+  width: 220px;
+  background: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 28px rgba(46,46,53,0.12);
+  font-size: 13px;
+  color: var(--text);
+  z-index: 40;
+  text-align: left;
+  animation: pop 180ms cubic-bezier(.2,.85,.25,1);
+}
+@keyframes pop {
+  from { transform: translateX(-50%) translateY(6px) scale(0.96); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+.note-text { margin-bottom: 6px; color: rgba(46,46,53,0.9); }
+.note-hint { font-size: 11px; color: rgba(46,46,53,0.45); }
+
+/* responsive */
+@media (max-width: 520px) {
+  .flower-card { width: 120px; min-height: 150px; }
+  .flower-bubble { width: 72px; height: 72px; }
+  .flower-emoji { font-size: 32px; }
+  .flower-note { width: 180px; }
+}

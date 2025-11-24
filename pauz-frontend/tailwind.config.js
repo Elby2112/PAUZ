@@ -9,7 +9,7 @@ export default {
       colors: {
         primary: "#5E8FA8",      // Soft Blue — headers, buttons
         secondary: "#E6E8EA",    // Warm Grey — cards, containers
-        accent: "#B49FCC",       // Muted Lavender — highlights
+        accent: "#B49FCC",       // Muted Lavender   — highlights
         textColor: "#2E2E35",    // Dark Charcoal — main text
         background: "#F4F6F7",   // Off-White — backgrounds
       },
@@ -19,5 +19,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 }

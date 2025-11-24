@@ -8,3 +8,6 @@ body {
   color: var(--textColor);
   font-family: 'Inter', sans-serif;
 }
+html {
+  scroll-behavior: smooth;
+}

@@ -1,0 +1,313 @@
+/* ================== PAGE LAYOUT ================== */
+.guided-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  background: #fff4ea;
+  min-height: 100vh;
+  padding: 20px;
+  padding-top: 100px; /* Adjusted for toolbar height */
+}
+
+/* ================== TOOLBAR STYLES ================== */
+.guided-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 16px;
+  background-color: #2E2E35;  /* Dark blue background */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+  border-radius: 16px;
+}
+
+/* TOOLBAR BUTTONS */
+.toolbar-btn {
+  background: #2E2E35;  /* Same dark blue as the toolbar */
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.2rem;
+  color: #fff;
+  border: 1px solid #2E2E35; /* Matching dark border */
+}
+
+.toolbar-btn:hover {
+  background: #1c1c1c;  /* Darker shade on hover */
+  transform: scale(1.1);
+}
+
+.toolbar-btn i {
+  margin: 0;
+}
+
+/* ================== ICON BUTTONS ================== */
+.gj-icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: #fff;  /* White background for icons */
+  border: 1px solid #2E2E35;  /* Dark blue border */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
+}
+
+.gj-icon-btn img {
+  width: 22px;
+  height: 22px;
+  transition: 0.25s ease;
+  filter: none !important;  /* Explicitly remove any filters affecting the icon */
+  color: inherit !important; /* Ensure the color is inherited from the parent */
+}
+
+.gj-icon-btn.active {
+  background: #2E2E35;  /* Dark blue for active state */
+}
+
+.gj-icon-btn.active img.active-icon {
+  filter: none !important; /* Remove any unnecessary filter for active icon */
+  color: inherit !important; /* Ensure no overriding color is applied */
+}
+
+.gj-icon-btn:hover {
+  transform: translateY(-3px);
+  background: #333333;  /* Slightly darker shade on hover */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Soft dark glow */
+}
+
+/* ================== CHANGE TOPIC BUTTON ================== */
+.gj-icon-btn.change-topic-btn {
+  background: #B49FCC;  /* Purple background */
+  color: #fff;
+  border: 1px solid #B49FCC; /* Matching purple border */
+  padding: 12px 24px;  /* Increased padding to give more space for both icon and text */
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;  /* Center both icon and text horizontally */
+  gap: 10px;  /* Increased gap between icon and text */
+  min-width: 150px;  /* Ensure there's enough width for both text and icon */
+  transition: 0.25s ease;
+  white-space: nowrap;  /* Prevent text from wrapping to next line */
+}
+
+/* Change Topic Button Icon */
+.gj-icon-btn.change-topic-btn img.fj-ai-icon {
+  width: 20px;  /* Slightly increased icon size for balance */
+  height: 20px;  /* Slightly increased icon size */
+  object-fit: contain;
+  filter: none;  /* No filter to preserve original icon color */
+  transition: 0.2s ease;
+}
+
+/* Hover Effect for Change Topic Button */
+.gj-icon-btn.change-topic-btn:hover {
+  background: #9b87b0;  /* Lighter purple on hover */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);  /* Soft dark glow */
+}
+
+.gj-icon-btn.change-topic-btn:hover img.fj-ai-icon {
+  transform: rotate(8deg) scale(1.1);  /* Icon animation on hover */
+}
+
+/* ================== MAIN JOURNAL AREA ================== */
+.guided-journal {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.guided-date {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 24px;
+  text-align: right;
+  width: 100%;
+  position: absolute;
+  top: 40px;
+  right: 20px;
+}
+
+.journal-paper {
+  background: #fffbe6;
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+  background-image: linear-gradient(to bottom, transparent 95%, #dcdcdc 95%);
+  background-size: 100% 40px;
+}
+
+/* Each question + textarea entry */
+.journal-entry {
+  margin-bottom: 32px;
+}
+
+.journal-question {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #2E2E35;
+}
+
+.journal-textarea {
+  width: 100%;
+  min-height: 120px;
+  border: none;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  background: transparent;
+  resize: vertical;
+  outline: none;
+  line-height: 1.5em;
+}
+
+/* ================== MODAL FOR TOPIC SELECTOR ================== */
+.guided-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.guided-modal {
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 90%;
+}
+
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.topic-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #B49FCC;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.topic-item:hover {
+  background: #9b87b0;
+}
+
+.guided-close {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #2E2E35;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  float: right;
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 800px) {
+  .guided-page {
+    flex-direction: column;
+  }
+  .guided-left {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 16px;
+    gap: 8px;
+  }
+  .guided-journal {
+    padding: 20px;
+  }
+}
+
+/* ================== TOOLBAR WRAPPER ================== */
+.gj-toolbar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  animation: fadeSlide 0.6s ease forwards;
+  opacity: 0;
+}
+
+/* ================== FINAL TOOLBAR STYLES ================== */
+.gj-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  background: #2E2E35; /* Dark blue background */
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.gj-icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #2E2E35; /* Dark blue border */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
+}
+
+.gj-icon-btn img {
+  width: 22px;
+  height: 22px;
+  transition: 0.25s ease;
+  filter: none !important;  /* Explicitly remove any filters affecting the icon */
+  color: inherit !important; /* Ensure the color is inherited from the parent */
+}
+
+.gj-icon-btn.active {
+  background: #E6E8EA; /* Dark blue for active state */
+}
+
+.gj-icon-btn.active img.active-icon {
+  filter: none !important; /* Remove any unnecessary filter for active icon */
+  color: inherit !important; /* Ensure no overriding color is applied */
+}
+
+.gj-icon-btn:hover {
+  transform: translateY(-3px);
+  background: #E6E8EA; /* Darker shade on hover */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Soft dark glow */
+}
+.gj-icon-btn.active img {
+  filter: none; /* Remove any filter that affects the icon's color */
+  color: inherit; /* Ensure the icon inherits the correct color from its parent */
+}
+
+.gj-icon-btn.change-topic-btn img {
+  filter: none; /* Remove the filter for the edit icon */
+  color: inherit; /* Ensures the color isn't overridden */
+}
