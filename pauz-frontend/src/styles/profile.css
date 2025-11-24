@@ -1,0 +1,143 @@
+:root {
+  --primary: #5e8fa8;
+  --accent: #b49fcc;
+  --text: #2e2e35;
+}
+
+/* Container */
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(94,143,168,0.25), rgba(180,159,204,0.15), rgba(255,244,234,0.7));
+  font-family: "Inter", sans-serif;
+}
+
+/* Profile Card */
+.profile-card {
+  width: 400px;
+  max-width: 90%;
+  background: #fff4ea;
+  padding: 35px 25px;
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  backdrop-filter: blur(10px);
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+}
+
+/* Header */
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  transition: transform 0.25s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+.profile-name {
+  font-size: 22px;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.profile-email {
+  font-size: 15px;
+  color: #6f6f77;
+  margin-bottom: 20px;
+}
+
+/* Journal Summary */
+.journal-summary {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.journal-card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 16px;
+  padding: 14px 16px;
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+
+.journal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+.journal-card img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 8px;
+}
+
+.journal-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.journal-count {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.journal-label {
+  font-size: 12px;
+  color: #6f6f77;
+}
+
+/* Go to My Garden button */
+.profile-btn.garden-btn {
+  padding: 14px;
+  background-color: var(--primary);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.profile-btn.garden-btn:hover {
+  background-color: #4c7d93;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .profile-card {
+    padding: 25px 20px;
+  }
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+}
