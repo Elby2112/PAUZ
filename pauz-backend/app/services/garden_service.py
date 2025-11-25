@@ -1,10 +1,8 @@
-import os
 from typing import List, Optional
 from sqlmodel import Session, select
 from app.models.garden import Garden
 from app.database import get_session
 from fastapi import Depends
-from datetime import datetime
 
 class GardenService:
     def __init__(self):

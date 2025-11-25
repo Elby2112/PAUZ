@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
+from app.models import User
 
 class FreeJournal(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

@@ -7,13 +7,11 @@ import json
 from sqlmodel import Session, select
 from app.models.free_journal import FreeJournal
 from app.models.hint import Hint
-from app.models.garden import Garden
 from app.database import get_session
 from fastapi import Depends
 from app.services.garden_service import garden_service # Will be updated later
 from app.services.storage_service import storage_service
 from app.utils import pdf_generator
-from datetime import datetime
 
 
 class FreeJournalService:
@@ -112,7 +110,7 @@ class FreeJournalService:
         if not free_journal:
             raise ValueError("Free Journal session not found.")
         
-        prompt = f"Analyze the following journal entry and provide: 1. The overall mood (e.g., happy, sad, reflective, calm). 2. Key insights from the entry. 3. A few questions to prompt further reflection. Return the response as a JSON object with keys 'mood', 'insights', and 'nextQuestions'.\n\n{free_journal.content}"
+        prompt = f"Analyze the following journal entry and provide: 1. The overall mood (e.g., happy, sad, reflective, calm). 2. Key insights from the entry. 3. A one-sentence summary of the entry. 4. A few questions to prompt further reflection. Return the response as a JSON object with keys 'mood', 'insights', 'summary', and 'nextQuestions'.\n\n{free_journal.content}"
         
         response = self.client.generate(prompts=prompt)
         response_text = response.text
@@ -121,10 +119,12 @@ class FreeJournalService:
             response_json = json.loads(response_text)
             mood = response_json.get("mood")
             insights = response_json.get("insights")
+            summary = response_json.get("summary", "") # New: extract summary
             next_questions = response_json.get("nextQuestions")
         except json.JSONDecodeError:
             mood = "unknown"
             insights = "Could not parse AI response."
+            summary = "" # New: default summary
             next_questions = []
 
         # Map mood to flower type
@@ -140,7 +140,7 @@ class FreeJournalService:
         garden_service.create_garden_entry(
             user_id=user_id,
             mood=mood,
-            note=insights,
+            note=summary, # Use summary for the note
             flower_type=flower_type,
             db=db
         )
@@ -148,6 +148,7 @@ class FreeJournalService:
         return {
             "mood": mood,
             "insights": insights,
+            "summary": summary, # Include summary in return
             "nextQuestions": next_questions
         }
 

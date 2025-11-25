@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
 from sqlmodel import Session
 from app.services.free_journal_service import free_journal_service
 from app.models.user import User
-from app.models.free_journal import FreeJournal
-from app.models.hint import Hint
 from pydantic import BaseModel
 from typing import Optional, List
+from datetime import datetime
 from app.dependencies import get_current_user
 from app.database import get_session
 

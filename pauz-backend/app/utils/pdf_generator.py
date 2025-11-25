@@ -2,12 +2,12 @@ from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from app.models.journal import Journal
+from app.models.guided_journal import GuidedJournal
 from app.models.free_journal import FreeJournal
 from app.models.hint import Hint
 from typing import List
 
-def generate_pdf(journal: Journal) -> bytes:
+def generate_pdf_guided_journal(guided_journal: GuidedJournal) -> bytes:
     """
     Generates a PDF for a given journal.
     """
@@ -17,11 +17,11 @@ def generate_pdf(journal: Journal) -> bytes:
     story = []
 
     # Title
-    story.append(Paragraph(f"Journal: {journal.topic}", styles['h1']))
+    story.append(Paragraph(f"GuidedJournal: {guided_journal.topic}", styles['h1']))
     story.append(Spacer(1, 12))
 
     # Entries
-    for entry in journal.entries:
+    for entry in guided_journal.entries:
         story.append(Paragraph(f"Prompt: {entry.prompt.text}", styles['h3']))
         story.append(Spacer(1, 6))
         story.append(Paragraph(entry.response, styles['Normal']))

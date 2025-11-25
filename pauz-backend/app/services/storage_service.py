@@ -2,8 +2,7 @@ import os
 import boto3
 # from raindrop_mcp.smartbucket import SmartBucket # Removed import
 
-from app.models.journal import Journal
-from botocore.client import Config # Keep this import if used elsewhere, otherwise remove
+from app.models.guided_journal import GuidedJournal
 
 class StorageService:
     def __init__(self):
@@ -22,7 +21,7 @@ class StorageService:
                                endpoint_url=f'https://{self.vultr_region}.vultrobjects.com')
 
 
-    def save_journal(self, journal: Journal):
+    def save_guided_journal(self, guided_journal: GuidedJournal):
         """
         Saves a journal to a SmartBucket.
         (Removed SmartBucket dependency as lm-raindrop does not provide direct object storage)
@@ -30,7 +29,7 @@ class StorageService:
         # self.smart_bucket.put_object(key=journal.id, content=journal.model_dump_json())
         raise NotImplementedError("SmartBucket direct object storage is not supported in the new API.")
 
-    def get_journal(self, journal_id: str) -> Journal:
+    def get_guided_journal(self, guided_journal_id: str) -> GuidedJournal:
         """
         Retrieves a journal from a SmartBucket.
         (Removed SmartBucket dependency as lm-raindrop does not provide direct object storage)
@@ -39,11 +38,11 @@ class StorageService:
         # return Journal.parse_raw(journal_data)
         raise NotImplementedError("SmartBucket direct object storage is not supported in the new API.")
 
-    def upload_pdf(self, journal_id: str, pdf_bytes: bytes) -> str:
+    def upload_pdf(self, guided_journal_id: str, pdf_bytes: bytes) -> str:
         """
         Uploads a PDF to Vultr Object Storage.
         """
-        file_name = f"journal_{journal_id}.pdf"
+        file_name = f"guided_journal_{guided_journal_id}.pdf"
         self.s3.put_object(Bucket=self.vultr_bucket_name, Key=file_name, Body=pdf_bytes, ACL='public-read')
         
         url = f"https://{self.vultr_bucket_name}.{self.vultr_region}.vultrobjects.com/{file_name}"

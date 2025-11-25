@@ -4,7 +4,6 @@ from sqlmodel import Session
 from app.services import auth_service
 from app.services.jwt_service import create_access_token
 from app.database import get_session
-from app.models.user import User
 
 router = APIRouter()
 

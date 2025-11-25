@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import json
 import os
 from dotenv import load_dotenv
-from app.routes import auth, journal, free_journal, garden
+from app.routes import auth, guided_journal, free_journal, garden, stats
 from app.database import create_db_and_tables # Import create_db_and_tables
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -66,13 +66,14 @@ with open("client_secret.json", "w") as f:
 
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(journal.router, prefix="/journal", tags=["journal"])
+app.include_router(guided_journal.router, prefix="/guided_journal", tags=["guided_journal"])
 app.include_router(free_journal.router, prefix="/freejournal", tags=["free-journal"])
 app.include_router(garden.router, prefix="/garden", tags=["garden"])
+app.include_router(stats.router, prefix="/stats", tags=["stats"])
 
 
 
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Journal App"}
+    return {"message": "Welcome to the Guided Journal App"}
