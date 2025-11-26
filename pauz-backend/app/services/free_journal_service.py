@@ -1,8 +1,9 @@
 import os
 import uuid
 from typing import Optional, List
-from raindrop import Raindrop
+# from raindrop import Raindrop # Replaced with mock for now
 import elevenlabs
+from elevenlabs.client import ElevenLabs
 import json
 from sqlmodel import Session, select
 from app.models.free_journal import FreeJournal
@@ -14,10 +15,25 @@ from app.services.storage_service import storage_service
 from app.utils import pdf_generator
 
 
+class MockResponse:
+    def __init__(self, text):
+        self.text = text
+
+class Raindrop:
+    def __init__(self, api_key: str):
+        print("Using Mock Raindrop client for AI text generation.")
+        pass
+
+    def generate(self, prompts: str):
+        print(f"Mock Raindrop client received prompt: {prompts}")
+        # Return a generic mock response
+        return MockResponse("This is a mock AI generated response. Please configure a real AI client.")
+
+
 class FreeJournalService:
     def __init__(self):
         self.client = Raindrop(api_key=os.getenv("AI_API_KEY"))
-        elevenlabs.set_api_key(os.getenv("ELEVENLABS_API_KEY"))
+        self.elevenlabs_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
     
     def create_free_journal_session(self, user_id: str, db: Session = Depends(get_session)) -> FreeJournal:
         """
@@ -86,16 +102,20 @@ class FreeJournalService:
 
     def transcribe_audio(self, session_id: str, user_id: str, audio_file: bytes, db: Session = Depends(get_session)) -> FreeJournal:
         """
-        Transcribes audio using ElevenLabs (simulated) and appends it to the journal content.
+        Transcribes audio using ElevenLabs and appends it to the journal content.
         """
-        # This is a placeholder for the actual transcription.
-        transcribed_text = "This is a simulated transcription of the audio file."
+        response = self.elevenlabs_client.speech_to_text.convert(audio=audio_file)
+        transcribed_text = response.text
 
         free_journal = self.get_free_journal_by_session_id(session_id, user_id, db)
         if not free_journal:
             raise ValueError("Free Journal session not found.")
         
-        free_journal.content += "\n" + transcribed_text
+        if free_journal.content:
+            free_journal.content += "\n" + transcribed_text
+        else:
+            free_journal.content = transcribed_text
+
         db.add(free_journal)
         db.commit()
         db.refresh(free_journal)

@@ -1,10 +1,25 @@
 import os
 from typing import List, Optional
-from raindrop import Raindrop
+# from raindrop import Raindrop # Replaced with mock for now
 from sqlmodel import Session, select
 from app.models.guided_journal import GuidedJournal, Prompt, GuidedJournalEntry
 from app.database import get_session
 from fastapi import Depends
+from app.services.storage_service import storage_service
+
+class MockResponse:
+    def __init__(self, text):
+        self.text = text
+
+class Raindrop:
+    def __init__(self, api_key: str):
+        print("Using Mock Raindrop client for AI text generation.")
+        pass
+
+    def generate(self, prompts: str):
+        print(f"Mock Raindrop client received prompt: {prompts}")
+        # Return a generic mock response
+        return MockResponse("This is a mock AI generated response. Please configure a real AI client.")
 
 class GuidedJournalService:
     def __init__(self):
@@ -30,14 +45,23 @@ class GuidedJournalService:
         db.commit()
         db.refresh(guided_journal)
 
+        prompts = []
         for p_data in prompts_data:
             prompt = Prompt(text=p_data["text"], guided_journal_id=guided_journal.id)
             db.add(prompt)
+            prompts.append(prompt)
         db.commit()
+        
+        # Refresh the journal to load the prompts
+        db.refresh(guided_journal)
+        
+        # Now save the complete journal with prompts to SmartBucket
+        storage_service.save_guided_journal(guided_journal)
+        
         return guided_journal
 
-    def get_guided_journal_by_id(self, guided_journal_id: str, db: Session = Depends(get_session)) -> Optional[GuidedJournal]:
-        return db.exec(select(GuidedJournal).where(GuidedJournal.id == guided_journal_id)).first()
+    def get_guided_journal_by_id(self, guided_journal_id: str) -> Optional[GuidedJournal]:
+        return storage_service.get_guided_journal(guided_journal_id)
 
     def get_user_guided_journals(self, user_id: str, db: Session = Depends(get_session)) -> List[GuidedJournal]:
         return db.exec(select(GuidedJournal).where(GuidedJournal.user_id == user_id)).all()
