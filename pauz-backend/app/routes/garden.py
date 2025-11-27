@@ -25,7 +25,7 @@ class GardenResponse(BaseModel):
     flower_type: str
 
     class Config:
-        orm_mode = True # To allow mapping from SQLModel to Pydantic
+        from_attributes = True # To allow mapping from SQLModel to Pydantic
 
 @router.post("/", response_model=GardenResponse)
 def create_garden_entry_route(

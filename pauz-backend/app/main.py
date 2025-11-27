@@ -3,8 +3,9 @@ from fastapi.responses import JSONResponse
 import json
 import os
 from dotenv import load_dotenv
-from app.routes import auth, guided_journal, free_journal, garden, stats
+from app.routes import auth, guided_journal as guided_journal_router, free_journal as free_journal_router, garden as garden_router, stats
 from app.database import create_db_and_tables # Import create_db_and_tables
+from app.models import user, guided_journal, free_journal, garden, hint
 from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
@@ -66,9 +67,9 @@ with open("client_secret.json", "w") as f:
 
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(guided_journal.router, prefix="/guided_journal", tags=["guided_journal"])
-app.include_router(free_journal.router, prefix="/freejournal", tags=["free-journal"])
-app.include_router(garden.router, prefix="/garden", tags=["garden"])
+app.include_router(guided_journal_router.router, prefix="/guided_journal", tags=["guided_journal"])
+app.include_router(free_journal_router.router, prefix="/freejournal", tags=["free-journal"])
+app.include_router(garden_router.router, prefix="/garden", tags=["garden"])
 app.include_router(stats.router, prefix="/stats", tags=["stats"])
 
 

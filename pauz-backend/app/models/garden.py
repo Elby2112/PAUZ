@@ -5,7 +5,7 @@ from app.models import User
 
 class Garden(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: str = Field(foreign_key="user.id", index=True) # Link to User model
+    user_id: str = Field(foreign_key="users.id", index=True) # Link to User model
     created_at: datetime = Field(default_factory=datetime.utcnow)
     mood: str
     note: Optional[str] = None

@@ -1,12 +1,11 @@
 import os
 from typing import List, Optional
+import uuid
 # from raindrop import Raindrop # Replaced with mock for now
-from sqlmodel import Session, select
 from app.models.guided_journal import GuidedJournal, Prompt, GuidedJournalEntry
-from app.database import get_session
-from fastapi import Depends
 from app.services.storage_service import storage_service
 
+# Mock AI client for testing purposes
 class MockResponse:
     def __init__(self, text):
         self.text = text
@@ -30,47 +29,73 @@ class GuidedJournalService:
         Generates 6 prompts for a given topic using an AI model.
         """
         prompt = f"Generate 6 creative and insightful journal prompts about '{topic}'. The prompts should be returned as a numbered list."
-        
         response = self.client.generate(prompts=prompt)
-        
-        prompts = response.split('\n')
-        prompts = [p.strip() for p in prompts if p.strip()]
-        prompts = [p.split('. ', 1)[1] if '. ' in p else p for p in prompts]
+        prompts_text = response.text.split('\n')
+        prompts_list = [p.strip() for p in prompts_text if p.strip()]
+        prompts_list = [p.split('. ', 1)[1] if '. ' in p else p for p in prompts_list]
 
-        return [{"id": i, "text": prompt_text} for i, prompt_text in enumerate(prompts)]
+        return [{"id": i + 1, "text": prompt_text} for i, prompt_text in enumerate(prompts_list)]
 
-    def create_guided_journal(self, user_id: str, topic: str, prompts_data: List[dict], db: Session = Depends(get_session)) -> GuidedJournal:
-        guided_journal = GuidedJournal(user_id=user_id, topic=topic)
-        db.add(guided_journal)
-        db.commit()
-        db.refresh(guided_journal)
-
-        prompts = []
-        for p_data in prompts_data:
-            prompt = Prompt(text=p_data["text"], guided_journal_id=guided_journal.id)
-            db.add(prompt)
-            prompts.append(prompt)
-        db.commit()
+    def create_guided_journal(self, user_id: str, topic: str, prompts_data: List[dict]) -> GuidedJournal:
+        """
+        Creates a new GuidedJournal object in memory and saves it to the SmartBucket.
+        """
+        journal_id = str(uuid.uuid4())
+        prompts = [Prompt(id=p_data["id"], text=p_data["text"], guided_journal_id=journal_id) for p_data in prompts_data]
         
-        # Refresh the journal to load the prompts
-        db.refresh(guided_journal)
+        guided_journal = GuidedJournal(
+            id=journal_id,
+            user_id=user_id,
+            topic=topic,
+            prompts=prompts,
+            entries=[] # Entries list starts empty
+        )
         
-        # Now save the complete journal with prompts to SmartBucket
         storage_service.save_guided_journal(guided_journal)
-        
         return guided_journal
 
-    def get_guided_journal_by_id(self, guided_journal_id: str) -> Optional[GuidedJournal]:
-        return storage_service.get_guided_journal(guided_journal_id)
+    def get_guided_journal_by_id(self, user_id: str, journal_id: str) -> Optional[GuidedJournal]:
+        """
+        Retrieves a guided journal by its ID from the SmartBucket.
+        """
+        return storage_service.get_guided_journal(user_id=user_id, journal_id=journal_id)
 
-    def get_user_guided_journals(self, user_id: str, db: Session = Depends(get_session)) -> List[GuidedJournal]:
-        return db.exec(select(GuidedJournal).where(GuidedJournal.user_id == user_id)).all()
+    def get_user_guided_journals(self, user_id: str) -> List[GuidedJournal]:
+        """
+        Retrieves all guided journals for a user from the SmartBucket.
+        """
+        journal_keys = storage_service.get_user_journal_keys(user_id)
+        journals = []
+        for key in journal_keys:
+            # Extract journal_id from key 'user_{user_id}/journal_{journal_id}'
+            journal_id = key.split('/')[-1].replace('journal_', '')
+            journal = self.get_guided_journal_by_id(user_id, journal_id)
+            if journal:
+                journals.append(journal)
+        return journals
 
-    def add_guided_journal_entry(self, guided_journal_id: str, prompt_id: int, response_text: str, db: Session = Depends(get_session)) -> GuidedJournalEntry:
-        guided_journal_entry = GuidedJournalEntry(guided_journal_id=guided_journal_id, prompt_id=prompt_id, response=response_text)
-        db.add(guided_journal_entry)
-        db.commit()
-        db.refresh(guided_journal_entry)
-        return guided_journal_entry
+    def add_guided_journal_entry(self, user_id: str, journal_id: str, prompt_id: int, response_text: str) -> Optional[GuidedJournalEntry]:
+        """
+        Adds an entry to a journal by fetching from SmartBucket, modifying, and saving back.
+        """
+        guided_journal = self.get_guided_journal_by_id(user_id, journal_id)
+        if not guided_journal:
+            return None # Journal not found
+
+        # Create the new entry
+        new_entry = GuidedJournalEntry(
+            id=str(uuid.uuid4()),
+            guided_journal_id=journal_id,
+            prompt_id=prompt_id,
+            response=response_text
+        )
+
+        # Append to the entries list
+        guided_journal.entries.append(new_entry)
+        
+        # Save the updated journal back to the SmartBucket
+        storage_service.save_guided_journal(guided_journal)
+
+        return new_entry
 
 guided_journal_service = GuidedJournalService()

@@ -24,7 +24,7 @@ class FreeJournalResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True # To allow mapping from SQLModel to Pydantic
+        from_attributes = True # To allow mapping from SQLModel to Pydantic
 
 class HintResponse(BaseModel):
     id: Optional[int]
@@ -34,7 +34,7 @@ class HintResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 @router.post("/", response_model=FreeJournalResponse)
 def create_free_journal_session_route(

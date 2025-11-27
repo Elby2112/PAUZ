@@ -17,3 +17,12 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# Mock MCP storage
+mcp_storage/
+
+# Secrets
+client_secret.json
+
+# Database
+database.db
