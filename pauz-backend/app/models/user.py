@@ -1,5 +1,11 @@
+from __future__ import annotations
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
+
+from app.models.guided_journal import GuidedJournal
+from app.models.free_journal import FreeJournal
+from app.models.garden import Garden
+from app.models.hint import Hint
 
 class User(SQLModel, table=True):
     __tablename__ = "users"  # Explicit table name
