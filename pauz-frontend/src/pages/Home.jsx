@@ -7,9 +7,10 @@ import JournalingInfo from "../components/JournalingInfo";
 const Home = () => {
   return (
     <div className="bg-[#F4F6F7] min-h-screen">
-      <Hero />
+      
+      {/*<Hero />*/}
       <JournalingChoice />
-      <JournalingInfo />
+      {/*<JournalingInfo />*/}
     </div>
   );
 };

@@ -14,13 +14,15 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
+/* REDUCED LEFT/RIGHT PADDING */
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 18px;
+  padding: 12px 6px; /* tighter spacing */
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 /* LOGO */
@@ -89,6 +91,7 @@
   animation: dropdownFadeSlide 200ms ease-out;
   transform-origin: top center;
 }
+
 @keyframes dropdownFadeSlide {
   from { opacity: 0; transform: translateY(-6px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -113,6 +116,7 @@
   white-space: nowrap;
   transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
+
 .dropdown-item img,
 .profile-option img {
   width: 20px;
@@ -120,10 +124,12 @@
   flex-shrink: 0;
   transition: transform 0.2s ease;
 }
+
 .dropdown-item:hover img,
 .profile-option:hover img {
   transform: scale(1.1);
 }
+
 .dropdown-item:hover,
 .profile-option:hover {
   color: #5E8FA8;
@@ -137,14 +143,15 @@
   left: auto;
 }
 
-/* PROFILE BUTTON */
+/* PROFILE BUTTON — tightened spacing */
 .navbar-profile {
   position: relative;
+  margin-right: 0;
 }
 .profile-button {
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 0; /* remove spacing */
   cursor: pointer;
 }
 .profile-icon {
@@ -159,8 +166,10 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  padding: 6px;
+  padding: 0; /* tightened spacing */
+  margin-left: 0;
 }
+
 .navbar-mobile-wrapper {
   position: absolute;
   top: 66px;
@@ -170,6 +179,7 @@
   justify-content: flex-end;
   z-index: 1200;
 }
+
 .navbar-mobile-menu {
   background: #fff4ea;
   width: 320px;
@@ -178,6 +188,7 @@
   padding: 12px;
   list-style: none;
 }
+
 .navbar-mobile-menu a,
 .navbar-mobile-menu button {
   display: flex;
@@ -194,11 +205,13 @@
   cursor: pointer;
   transition: color 0.2s ease, background 0.2s ease;
 }
+
 .navbar-mobile-menu a:hover,
 .navbar-mobile-menu button:hover {
   color: #5E8FA8;
   background: rgba(94,143,168,0.08);
 }
+
 .mobile-accordion summary {
   list-style: none;
   cursor: pointer;
@@ -206,17 +219,71 @@
   font-weight: 600;
   color: #2E2E35;
 }
+
 .mobile-submenu {
   padding-left: 12px;
   margin-top: 6px;
 }
+
 .mobile-divider {
   height: 1px;
   background: rgba(0,0,0,0.06);
   margin: 8px 0;
 }
 
+/* LEFT HAMBURGER */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.left-dropdown {
+  left: 0;
+  right: auto;
+}
+
+/* DROPDOWN ITEMS */
+.enhanced-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  min-width: 220px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 4px 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  z-index: 1300;
+}
+
+/* LOGO CENTER */
+.navbar-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Hide original links on desktop */
+.navbar-links { display: none; }
+
+/* MEDIA QUERIES */
 @media (max-width: 767px) {
-  .navbar-links { display: none; }
+  .navbar-left, .navbar-logo, .navbar-profile {
+    position: static;
+    transform: none;
+  }
   .navbar-logo img { height: 48px; }
+}
+
+/* Add this temporarily to your navbar.css */
+.profile-icon {
+  border: 2px solid #4CAF50 !important; /* Green border to see it clearly */
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: cover !important;
+}
+.profile-icon {
+  transition: opacity 0.3s ease-in-out;
 }

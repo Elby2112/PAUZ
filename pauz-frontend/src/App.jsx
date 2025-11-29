@@ -8,12 +8,9 @@ import Garden from "./pages/Garden";
 import FreeJournal from "./Journals/freeJournal";
 import GuidedJournaling from "./Journals/guidedJournal";
 
-// Auth pages
-import Login from "./pages/authentication/Login"
-import Signup from "./pages/authentication/Signup";
-
 // Profile page
-import Profile from "./pages/authentication/Profile"; // Import the Profile page
+import Profile from "./pages/authentication/Profile";
+import GoogleCallback from "./pages/authentication/GoogleCallback";
 
 // Wrapper to hide Navbar/Footer on auth routes
 function LayoutWrapper({ children }) {
@@ -30,10 +27,10 @@ function LayoutWrapper({ children }) {
   );
 }
 
-// Protected route
+// Protected route component
 function ProtectedRoute({ children }) {
-  const user = localStorage.getItem("pauz_user");
-  return user ? children : <Navigate to="/login" />;
+  const token = localStorage.getItem("pauz_token");
+  return token ? children : <Navigate to="/" />;
 }
 
 function App() {
@@ -41,20 +38,14 @@ function App() {
     <Router>
       <LayoutWrapper>
         <Routes>
-          {/* Auth */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          {/* Public Home */}
+          <Route path="/" element={<Home />} />
 
-          {/* Main App (protected) */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          {/* Google Callback */}
+         <Route path="/auth/callback" element={<GoogleCallback />} />
 
+
+          {/* Protected Routes */}
           <Route
             path="/garden"
             element={
@@ -63,7 +54,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/journal"
             element={
@@ -72,7 +62,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/guided/:category"
             element={
@@ -81,8 +70,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Profile Route */}
           <Route
             path="/profile"
             element={
@@ -91,6 +78,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Catch-all redirect to home */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </LayoutWrapper>
     </Router>

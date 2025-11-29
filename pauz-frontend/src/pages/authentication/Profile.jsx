@@ -8,19 +8,26 @@ import "../../styles/profile.css";
 const Profile = () => {
   const navigate = useNavigate();
 
-  // Example counts (replace with actual data later)
   const totalJournals = 12;
   const freeJournals = 7;
   const guidedJournals = 5;
 
+  const user = JSON.parse(localStorage.getItem("pauz_user")) ?? {};
+
   return (
     <div className="profile-container">
       <div className="profile-card">
+
         {/* Profile Header */}
         <div className="profile-header">
-          <img src={profileIcon} alt="Profile Avatar" className="profile-avatar" />
-          <h2 className="profile-name">Loubna Ben</h2>
-          <p className="profile-email">loubna@example.com</p>
+          <img
+            src={user.picture || profileIcon}
+            alt="Profile Avatar"
+            className="profile-avatar"
+            crossOrigin="anonymous"
+          />
+          <h2 className="profile-name">{user.name || "Unknown User"}</h2>
+          <p className="profile-email">{user.email || ""}</p>
         </div>
 
         {/* Journal Summary */}
@@ -32,6 +39,7 @@ const Profile = () => {
               <span className="journal-label">Free Journals</span>
             </div>
           </div>
+
           <div className="journal-card">
             <img src={guidedJournalIcon} alt="Guided Journal" />
             <div className="journal-info">
@@ -39,6 +47,7 @@ const Profile = () => {
               <span className="journal-label">Guided Journals</span>
             </div>
           </div>
+
           <div className="journal-card total">
             <img src={profileIcon} alt="Total Journals" />
             <div className="journal-info">
@@ -48,7 +57,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Go to My Garden */}
         <button
           className="profile-btn garden-btn"
           onClick={() => navigate("/garden")}

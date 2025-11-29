@@ -54,6 +54,7 @@ const JournalingChoice = () => {
 
   return (
     <section className="journaling-section">
+     <div className="journaling-flow"></div>
       <h2 className="journaling-title">
         What kind of journaling are you looking for?
       </h2>
