@@ -1,5 +1,4 @@
 import os
-import json
 
 # This is a mock implementation of the MCP services for local development.
 # It uses the local filesystem to simulate a "SmartBucket".
@@ -58,3 +57,12 @@ def list_objects(bucket_name: str, prefix: str = "") -> list[dict]:
             
     print(f"[mock_mcp] Listed {len(object_keys)} objects in bucket '{bucket_name}' with prefix '{prefix}'")
     return object_keys
+
+def delete_object(bucket_name: str, key: str):
+    """Mocks the delete_object functionality by deleting a local file."""
+    file_path = _get_file_path(bucket_name, key)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"[mock_mcp] Deleted object from {file_path}")
+    else:
+        print(f"[mock_mcp] Object not found for deletion: {file_path}")

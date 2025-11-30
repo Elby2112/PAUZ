@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.guided_journal_service import guided_journal_service
-from app.models.guided_journal import GuidedJournal, GuidedJournalEntry, Prompt
-from app.models.user import User
+from app.models import GuidedJournal, GuidedJournalEntry, Prompt, User
 from app.utils import pdf_generator
 from app.services.storage_service import storage_service
 from pydantic import BaseModel

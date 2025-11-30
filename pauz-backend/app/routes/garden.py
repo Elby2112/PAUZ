@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.services.garden_service import garden_service
-from app.models.garden import Garden
-from app.models.user import User
+from app.models import Garden, User
 from pydantic import BaseModel
 from typing import List, Optional
 from app.dependencies import get_current_user

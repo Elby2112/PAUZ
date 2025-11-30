@@ -1,11 +1,11 @@
 from io import BytesIO
-from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from app.models.guided_journal import GuidedJournal
-from app.models.free_journal import FreeJournal
-from app.models.hint import Hint
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from app.models import GuidedJournal, FreeJournal, Hint
 from typing import List
+from app.models import Prompt
 
 def generate_pdf_guided_journal(guided_journal: GuidedJournal) -> bytes:
     """
