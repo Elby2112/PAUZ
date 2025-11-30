@@ -1,0 +1,427 @@
+/* savedJournals.css - JOURNAL BOOK AESTHETIC */
+.saved-journals-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff4ea 0%, #f8f6fa 100%);
+  padding: 2rem;
+  font-family: "Inter", sans-serif;
+  color: #2e2e35;
+  position: relative;
+}
+
+/* Header */
+.sj-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sj-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2e2e35;
+  margin-bottom: 0.5rem;
+  font-family: 'Georgia', serif;
+}
+
+.sj-header p {
+  font-size: 1.1rem;
+  color: #8c6e94;
+  font-weight: 500;
+}
+
+/* Books Shelf */
+.sj-shelf {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 4rem;
+}
+
+.sj-shelf-surface {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, #8b7355, #a08c6e);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sj-books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  align-items: end;
+  padding: 0 1rem;
+}
+
+/* Book Styles */
+.sj-book {
+  position: relative;
+  height: 220px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  perspective: 1000px;
+}
+
+.sj-book:hover {
+  transform: translateY(-10px) rotate(2deg);
+}
+
+.sj-book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px 0 0 4px;
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.sj-book-cover {
+  position: absolute;
+  left: 30px;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.sj-book-cover-content {
+  text-align: center;
+  padding: 1rem;
+  color: white;
+}
+
+.sj-book-cover-content h3 {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.sj-book-type {
+  font-size: 0.7rem;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.sj-book-hint {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.sj-book-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.sj-book-date {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  color: white;
+}
+
+/* Book Color Variants */
+.sj-book-purple .sj-book-spine {
+  background: linear-gradient(135deg, #8c6e94, #6d5b7a);
+}
+
+.sj-book-purple .sj-book-cover {
+  background: linear-gradient(135deg, #9a7ca0, #7a5a82);
+  border-left: 2px solid #6d5b7a;
+}
+
+.sj-book-beige .sj-book-spine {
+  background: linear-gradient(135deg, #d4b896, #b8a086);
+}
+
+.sj-book-beige .sj-book-cover {
+  background: linear-gradient(135deg, #e8d0b3, #c9b49a);
+  border-left: 2px solid #b8a086;
+  color: #2e2e35;
+}
+
+.sj-book-beige .sj-book-cover-content {
+  color: #2e2e35;
+}
+
+.sj-book-lavender .sj-book-spine {
+  background: linear-gradient(135deg, #b8a1c7, #9a87a9);
+}
+
+.sj-book-lavender .sj-book-cover {
+  background: linear-gradient(135deg, #d0c1dd, #b8a1c7);
+  border-left: 2px solid #9a87a9;
+  color: #2e2e35;
+}
+
+.sj-book-lavender .sj-book-cover-content {
+  color: #2e2e35;
+}
+
+.sj-book-rose .sj-book-spine {
+  background: linear-gradient(135deg, #e8b4bc, #c9959e);
+}
+
+.sj-book-rose .sj-book-cover {
+  background: linear-gradient(135deg, #f4c8cf, #e8b4bc);
+  border-left: 2px solid #c9959e;
+}
+
+.sj-book-blue .sj-book-spine {
+  background: linear-gradient(135deg, #89a7c2, #6d8ba5);
+}
+
+.sj-book-blue .sj-book-cover {
+  background: linear-gradient(135deg, #a5c1d6, #89a7c2);
+  border-left: 2px solid #6d8ba5;
+}
+
+.sj-book-green .sj-book-spine {
+  background: linear-gradient(135deg, #a8c9a8, #8aaf8a);
+}
+
+.sj-book-green .sj-book-cover {
+  background: linear-gradient(135deg, #c1ddc1, #a8c9a8);
+  border-left: 2px solid #8aaf8a;
+  color: #2e2e35;
+}
+
+.sj-book-green .sj-book-cover-content {
+  color: #2e2e35;
+}
+
+/* Journal Reading Modal */
+.sj-journal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(46, 46, 53, 0.95);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.sj-journal-modal {
+  background: #f5f0e6;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: sjJournalAppear 0.5s ease-out;
+}
+
+@keyframes sjJournalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotateX(0);
+  }
+}
+
+.sj-journal-pages {
+  display: flex;
+  min-height: 600px;
+  background: #f5f0e6;
+  border-radius: 12px;
+  position: relative;
+}
+
+.sj-journal-page {
+  flex: 1;
+  padding: 2rem;
+  background: #fffef9;
+  position: relative;
+  overflow-y: auto;
+}
+
+.sj-left-page {
+  border-right: 1px solid #e8e0d0;
+  background: linear-gradient(90deg, #fffef9 0%, #fcf8f0 100%);
+}
+
+.sj-right-page {
+  border-left: 1px solid #e8e0d0;
+  background: linear-gradient(90deg, #fcf8f0 0%, #fffef9 100%);
+}
+
+/* Journal Page Content */
+.sj-page-content {
+  height: 100%;
+  position: relative;
+}
+
+/* Left Page Styles */
+.sj-journal-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8e0d0;
+}
+
+.sj-journal-header h2 {
+  font-family: 'Georgia', serif;
+  color: #2e2e35;
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.sj-journal-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #8c6e94;
+}
+
+.sj-journal-type {
+  background: #8c6e94;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+}
+
+/* Right Page Styles */
+.sj-journal-text {
+  line-height: 1.8;
+  color: #2e2e35;
+  font-family: 'Georgia', serif;
+  background-image: linear-gradient(transparent 39px, #e8e0d0 40px);
+  background-size: 100% 40px;
+  min-height: 100%;
+  padding: 0 0.5rem;
+}
+
+.sj-journal-text p {
+  margin: 0 0 40px 0;
+  padding: 0;
+  line-height: 40px;
+}
+
+/* Close Button */
+.sj-close-journal-btn {
+  background: #8c6e94;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 1rem auto;
+  display: block;
+}
+
+.sj-close-journal-btn:hover {
+  background: #9a7ca0;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .saved-journals-container {
+    padding: 1rem;
+  }
+
+  .sj-header h1 {
+    font-size: 2rem;
+  }
+
+  .sj-books-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .sj-book {
+    height: 180px;
+  }
+
+  .sj-book-cover {
+    width: 90px;
+  }
+
+  .sj-journal-pages {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .sj-left-page {
+    border-right: none;
+    border-bottom: 1px solid #e8e0d0;
+  }
+
+  .sj-journal-modal {
+    max-height: 95vh;
+  }
+}
+/* Add to savedJournals.css */
+
+.sj-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #8c6e94;
+}
+
+.sj-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.sj-empty h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sj-empty p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.sj-start-writing-btn {
+  background: #8c6e94;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sj-start-writing-btn:hover {
+  background: #9a7ca0;
+  transform: translateY(-2px);
+}

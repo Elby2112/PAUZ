@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Garden from "./pages/Garden";
 import FreeJournal from "./Journals/freeJournal";
 import GuidedJournaling from "./Journals/guidedJournal";
+import SavedJournals from "./pages/SavedJournals"; // ⭐ ADD THIS IMPORT
 
 // Profile page
 import Profile from "./pages/authentication/Profile";
@@ -42,8 +43,7 @@ function App() {
           <Route path="/" element={<Home />} />
 
           {/* Google Callback */}
-         <Route path="/auth/callback" element={<GoogleCallback />} />
-
+          <Route path="/auth/callback" element={<GoogleCallback />} />
 
           {/* Protected Routes */}
           <Route
@@ -75,6 +75,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          {/* ⭐ ADD SAVED JOURNALS ROUTE */}
+          <Route
+            path="/saved-journals"
+            element={
+              <ProtectedRoute>
+                <SavedJournals />
               </ProtectedRoute>
             }
           />

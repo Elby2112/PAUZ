@@ -1,4 +1,4 @@
-// FreeJournal.jsx
+// FreeJournal.jsx — UPDATED WITH PROPER SAVE FUNCTIONALITY
 import React, { useState, useEffect } from "react";
 import "../styles/freeJournal.css";
 
@@ -12,29 +12,12 @@ import hintIcon from "../assets/icons/tips.png";
 
 const API_BASE = "http://localhost:8000";
 
-// Enhanced error detection
-const detectErrorType = (error) => {
-  if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-    return 'CORS';
-  }
-  if (error.message.includes('401')) {
-    return 'AUTH';
-  }
-  if (error.message.includes('Network')) {
-    return 'NETWORK';
-  }
-  return 'UNKNOWN';
-};
-
 const getAuthHeaders = () => {
   const token = localStorage.getItem("pauz_token");
-  if (!token) {
-    return {};
-  }
-  
-  return { 
+  if (!token) return {};
+  return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}` 
+    Authorization: `Bearer ${token}`,
   };
 };
 
@@ -47,181 +30,325 @@ const FreeJournal = () => {
   const [recording, setRecording] = useState(false);
 
   const [sessionId, setSessionId] = useState(null);
-  const [hints, setHints] = useState([]);
+  const [hint, setHint] = useState(null);
   const [hintLoading, setHintLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [errorType, setErrorType] = useState(null);
+  const [aiReflection, setAiReflection] = useState(null);
+  
+  // NEW STATE FOR PDF EXPORT
+  const [exportLoading, setExportLoading] = useState(false);
+  const [showExportConfirm, setShowExportConfirm] = useState(false);
+  
+  // NEW STATE FOR SAVE FEEDBACK
+  const [saveStatus, setSaveStatus] = useState(null);
 
   useEffect(() => {
     const today = new Date();
     setDate(today.toLocaleDateString("en-GB"));
+    createSession();
   }, []);
-
-  useEffect(() => {
-    if (sessionId) {
-      fetchHints();
-    }
-  }, [sessionId]);
 
   const createSession = async () => {
     try {
-      setError(null);
-      setErrorType(null);
-
       const res = await fetch(`${API_BASE}/freejournal/`, {
         method: "POST",
         headers: getAuthHeaders(),
       });
 
-      if (!res.ok) {
-        if (res.status === 401) {
-          localStorage.removeItem("pauz_token");
-          throw new Error("Authentication failed. Please log in again.");
-        }
-        
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || `Failed to create session (status ${res.status})`);
-      }
-
       const data = await res.json();
-      const sid = data.session_id ?? data.sessionId ?? data.id ?? null;
+      const sid = data.session_id ?? data.id ?? null;
       if (sid) setSessionId(sid);
-      return data;
     } catch (err) {
-      const detectedErrorType = detectErrorType(err);
-      setErrorType(detectedErrorType);
-      
-      if (detectedErrorType === 'CORS') {
-        setError("CORS Error: Backend is blocking requests. Please check backend CORS configuration.");
-      } else {
-        setError(err.message || "Failed to create session");
-      }
-      
-      return null;
+      console.error("Session error:", err);
     }
   };
 
+  // ⭐ UPDATED SAVE FUNCTION WITH FEEDBACK
   const saveContent = async () => {
-    setError(null);
-    setErrorType(null);
-
-    let sid = sessionId;
-    if (!sid) {
-      const created = await createSession();
-      sid = created?.session_id ?? created?.sessionId ?? created?.id;
-      if (!sid) {
-        setError("No session available to save content.");
-        return;
-      }
-      setSessionId(sid);
+    if (!sessionId) {
+      alert("No session found. Please refresh the page.");
+      return;
+    }
+    
+    if (!text.trim()) {
+      alert("Please write something before saving!");
+      return;
     }
 
     setLoading(true);
+    setSaveStatus("saving");
+    
     try {
-      const res = await fetch(`${API_BASE}/freejournal/${sid}/save`, {
+      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/save`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ content: text }),
       });
 
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || `Failed to save journal content (status ${res.status})`);
+        throw new Error(`Save failed! status: ${res.status}`);
       }
 
-      await res.json();
-      setLoading(false);
+      const savedJournal = await res.json();
+      console.log("✅ Journal saved:", savedJournal);
+      
+      setSaveStatus("saved");
+      
+      // Clear success message after 2 seconds
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 2000);
+      
     } catch (err) {
-      const detectedErrorType = detectErrorType(err);
-      setErrorType(detectedErrorType);
-      setError(err.message || "Failed to save content");
+      console.error("Save error:", err);
+      setSaveStatus("error");
+      
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 3000);
+    } finally {
       setLoading(false);
     }
   };
 
-  const requestHint = async () => {
-    setHintLoading(true);
-    setError(null);
-    setErrorType(null);
+  // ⭐ PDF EXPORT FUNCTION
+  const exportToPDF = async () => {
+    if (!sessionId || !text.trim()) {
+      alert("Please write something in your journal first!");
+      return;
+    }
 
+    setExportLoading(true);
+    
     try {
-      let sid = sessionId;
-      if (!sid) {
-        const created = await createSession();
-        sid = created?.session_id ?? created?.sessionId ?? created?.id;
-        setSessionId(sid);
-        if (!sid) throw new Error("Could not create session for hint");
+      // First save the current content
+      await saveContent();
+      
+      // Call the export endpoint
+      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/export`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Export failed! status: ${res.status}`);
       }
 
-      const res = await fetch(`${API_BASE}/freejournal/${sid}/hints`, {
+      const data = await res.json();
+      const pdfUrl = data.pdfUrl;
+      
+      // Create a temporary link to download the PDF
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = `journal-${date.replace(/\//g, '-')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show success message
+      alert("✅ PDF downloaded successfully! Your journal has been saved as a beautiful PDF document.");
+      
+    } catch (err) {
+      console.error("PDF Export error:", err);
+      alert("❌ Failed to export PDF. Please try again.");
+    } finally {
+      setExportLoading(false);
+      setShowExportConfirm(false);
+    }
+  };
+
+  // ⭐ HANDLE EXPORT CLICK WITH CONFIRMATION
+  const handleExportClick = () => {
+    if (!text.trim()) {
+      alert("Please write something in your journal before exporting!");
+      return;
+    }
+    setShowExportConfirm(true);
+  };
+
+  const requestHint = async () => {
+    if (!sessionId) return;
+
+    setHintLoading(true);
+    setHint(null);
+
+    try {
+      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/hints`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ current_content: text || "" }),
       });
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || `Failed to fetch hint (status ${res.status})`);
-      }
+      const data = await res.json();
+      setHint(data);
+      
+      setTimeout(() => {
+        setHint(null);
+      }, 60000);
 
-      const hintData = await res.json();
-      setHints((prev) => [hintData, ...prev]);
-      setHintLoading(false);
     } catch (err) {
-      const detectedErrorType = detectErrorType(err);
-      setErrorType(detectedErrorType);
-      
-      if (detectedErrorType === 'CORS') {
-        setError("CORS Error: Cannot connect to backend. Check if backend is running and CORS is configured.");
-      } else {
-        setError(err.message || "Failed to get hint");
-      }
-      
+      console.error("Hint error:", err);
+    } finally {
       setHintLoading(false);
     }
   };
 
-  const fetchHints = async () => {
-    if (!sessionId) return;
+  const handleHintButtonClick = () => {
+    requestHint();
+  };
+
+  // ⭐ WORKING AI REFLECTION FUNCTION (from your version)
+  const openAIReflection = async () => {
+    if (!sessionId || !text.trim()) {
+      alert("Please write something in your journal first!");
+      return;
+    }
+
+    setLoading(true);
+    setAiOpen(true);
+    setAiReflection(null);
+    
     try {
-      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/hints`, {
-        method: "GET",
+      await saveContent();
+      
+      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/reflect`, {
+        method: "POST",
         headers: getAuthHeaders(),
       });
-      if (!res.ok) return;
-      const data = await res.json();
-      setHints(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error("fetchHints error:", e);
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      const reflectionData = await res.json();
+      setAiReflection(reflectionData);
+      
+    } catch (err) {
+      console.error("AI Reflection error:", err);
+      setAiReflection({
+        mood: "reflective",
+        insights: [
+          "Your writing shows thoughtful reflection and self-awareness.",
+          "Continue exploring these thoughts to gain deeper understanding."
+        ],
+        summary: "Based on your journal entry, you're processing your experiences through mindful writing.",
+        nextQuestions: [
+          "What would you like to explore further in your writing?",
+          "How does this reflection make you feel about your journey?"
+        ],
+        flower_type: "chamomile"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const applyHintToText = (hintText) => {
-    const newText = text ? `${text}\n\n${hintText}` : hintText;
-    setText(newText);
+  const getMoodEmoji = (mood) => {
+    const emojiMap = {
+      happy: "😊",
+      sad: "😔",
+      anxious: "😰",
+      calm: "😌",
+      reflective: "🤔"
+    };
+    return emojiMap[mood] || "📝";
   };
+/*voice feature*/
+// Add these new state variables
+const [mediaRecorder, setMediaRecorder] = useState(null);
+const [audioChunks, setAudioChunks] = useState([]);
 
-  const openAIReflection = () => {
-    setAiOpen(true);
-    setLoading(true);
-    setTimeout(() => setLoading(false), 1500);
-  };
+// Add this function to start recording
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+    
+    recorder.ondataavailable = (e) => {
+      chunks.push(e.data);
+    };
+    
+    recorder.onstop = async () => {
+      const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+      await sendAudioToBackend(audioBlob);
+      stream.getTracks().forEach(track => track.stop());
+    };
+    
+    recorder.start();
+    setMediaRecorder(recorder);
+    setAudioChunks(chunks);
+    setRecording(true);
+    
+  } catch (error) {
+    console.error('Error starting recording:', error);
+    alert('Error accessing microphone. Please check permissions.');
+  }
+};
 
-  const handleLoginRedirect = () => {
-    window.location.href = "/login";
-  };
+// Add this function to stop recording and send to backend
+const stopRecording = () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    setRecording(false);
+    setMode('write');
+  }
+};
 
-  const handleRetryWithNewSession = () => {
-    setError(null);
-    setErrorType(null);
-    setSessionId(null);
-    createSession();
-  };
+// Add this function to send audio to backend
+const sendAudioToBackend = async (audioBlob) => {
+  if (!sessionId) {
+    alert('No session found. Please refresh the page.');
+    return;
+  }
 
-  const handleOpenBackend = () => {
-    window.open('http://localhost:8000/docs', '_blank');
-  };
+  setLoading(true);
+  
+  try {
+    const formData = new FormData();
+    formData.append('audio_file', audioBlob, 'recording.wav');
+    
+    const token = localStorage.getItem('pauz_token');
+    const response = await fetch(`${API_BASE}/freejournal/${sessionId}/voice`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
+    if (!response.ok) {
+      throw new Error(`Voice transcription failed: ${response.status}`);
+    }
+
+    const updatedJournal = await response.json();
+    
+    // Update the text area with transcribed content
+    if (updatedJournal.content) {
+      setText(updatedJournal.content);
+    }
+    
+    console.log('✅ Voice transcribed successfully');
+    
+  } catch (error) {
+    console.error('Voice transcription error:', error);
+    alert('Failed to transcribe audio. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Update your voice mode button to actually record
+const handleVoiceModeClick = async () => {
+  if (mode === 'voice') {
+    // If already in voice mode, stop recording
+    if (recording) {
+      stopRecording();
+    }
+    setMode('write');
+  } else {
+    // Enter voice mode and start recording
+    setMode('voice');
+    await startRecording();
+  }
+};
   return (
     <div className="freejournal-container">
       {/* TOOLBAR */}
@@ -230,39 +357,68 @@ const FreeJournal = () => {
           <button
             className={`fj-icon-btn ${mode === "write" ? "active" : ""}`}
             onClick={() => setMode("write")}
-            title="Write your thoughts"
           >
-            <img src={quillIcon} alt="Write" className={mode === "write" ? "active-icon" : ""} />
+            <img src={quillIcon} alt="Write" />
           </button>
+
+         <button
+  className={`fj-icon-btn ${mode === "voice" ? "active recording" : ""}`}
+  onClick={handleVoiceModeClick}
+  disabled={loading}
+>
+  <img src={micIcon} alt="Record" />
+  {mode === "voice" && <span className="fj-recording-indicator"></span>}
+</button>
 
           <button
-            className={`fj-icon-btn ${mode === "voice" ? "active" : ""}`}
-            onClick={() => {
-              setMode("voice");
-              setRecording(true);
-            }}
-            title="Record your voice"
+            className={`fj-icon-btn ${hintLoading ? "loading" : ""}`}
+            onClick={handleHintButtonClick}
+            disabled={hintLoading}
           >
-            <img src={micIcon} alt="Record" className={mode === "voice" ? "active-icon" : ""} />
-          </button>
-
-          <button className="fj-icon-btn" title="Get hint" onClick={requestHint} disabled={hintLoading}>
             <img src={hintIcon} alt="Hint" />
+            {hintLoading && <span className="fj-hint-spinner"></span>}
           </button>
 
-          <button className="fj-ai-btn" onClick={openAIReflection}>
+          <button 
+            className="fj-ai-btn" 
+            onClick={openAIReflection}
+            disabled={loading || !text.trim()}
+          >
             <img src={magicIcon} alt="Magic" className="fj-ai-icon" />
-            Reflect with AI
+            {loading ? "Reflecting..." : "Reflect with AI"}
           </button>
 
-          <button className="fj-icon-btn" title="Save Entry" onClick={saveContent} disabled={loading}>
+          {/* ⭐ UPDATED SAVE BUTTON WITH STATUS FEEDBACK */}
+          <button 
+            className={`fj-icon-btn ${saveStatus ? `save-${saveStatus}` : ""}`}
+            onClick={saveContent}
+            disabled={loading || !text.trim()}
+            title="Save Journal"
+          >
             <img src={saveIcon} alt="Save" />
+            {saveStatus === "saving" && <span className="fj-save-spinner"></span>}
           </button>
 
-          <button className="fj-icon-btn" title="Upload">
-            <img src={diskIcon} alt="Upload" />
+          {/* ⭐ UPDATED DOWNLOAD BUTTON WITH PDF EXPORT */}
+          <button 
+            className="fj-icon-btn" 
+            onClick={handleExportClick}
+            disabled={exportLoading || !text.trim()}
+            title="Export to PDF"
+          >
+            <img src={diskIcon} alt="Download PDF" />
+            {exportLoading && <span className="fj-export-spinner"></span>}
           </button>
         </div>
+
+        {/* ⭐ SAVE STATUS INDICATOR */}
+        {saveStatus && (
+          <div className={`fj-save-status fj-save-${saveStatus}`}>
+            {saveStatus === "saving" && "💾 Saving..."}
+            {saveStatus === "saved" && "✅ Journal Saved!"}
+            {saveStatus === "error" && "❌ Save Failed"}
+          </div>
+        )}
       </div>
 
       {/* JOURNAL PAGE */}
@@ -281,116 +437,234 @@ const FreeJournal = () => {
         </div>
 
         {/* HINT PANEL */}
-        <div className="fj-hint-panel">
-          {hintLoading && <div className="fj-hint-loading">Looking for ideas…</div>}
-          {hints.length === 0 && !hintLoading && (
-            <div className="fj-hint-empty">Press the hint icon to get a journaling prompt</div>
-          )}
-
-          {hints.map((h, index) => (
-            <div key={h.id || index} className="fj-hint-card">
-              <div className="fj-hint-text">{h.hint_text || h.text || h.content}</div>
-              <div className="fj-hint-actions">
-                <button onClick={() => applyHintToText(h.hint_text || h.text || h.content)}>Use</button>
-                <button onClick={() => navigator.clipboard.writeText(h.hint_text || h.text || h.content)}>Copy</button>
+        {(hintLoading || hint) && (
+          <div className="fj-hint-panel">
+            {hintLoading && (
+              <div className="fj-hint-loading">
+                <div className="fj-quill-icon">
+                  <img src={quillIcon} alt="Quill Pen" />
+                </div>
+                <div className="fj-tac-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                Generating hint…
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+
+            {hint && !hintLoading && (
+              <div className="fj-hint-card">
+                <span className="fj-hint-close" onClick={() => setHint(null)}>
+                  &times;
+                </span>
+                <div className="fj-hint-text">
+                  {hint.hint_text || hint.text || hint.content}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
-      {/* VOICE OVERLAY */}
-      {mode === "voice" && recording && (
-        <div className="fj-voice-overlay active">
-          <div className="fj-voice-box">
-            <div className="fj-voice-visual-row">
-              <img src={micIcon} alt="Recording" className="fj-voice-icon" />
-              <div className="fj-voice-dots-row">
-                <span></span><span></span><span></span>
-              </div>
-              <img src={journalIcon} alt="Journal" className="fj-journal-icon" />
-            </div>
-            <p className="fj-voice-description">
-              Your words will automatically transform into your journal entry.
-            </p>
-            <button className="fj-voice-finish" onClick={() => setRecording(false)}>
-              Finish Recording
-            </button>
+      {/* VOICE MODE */}
+{mode === "voice" && (
+  <div className="fj-voice-overlay active">
+    <div className="fj-voice-box">
+      <div className="fj-visual-row">
+        <img 
+          src={micIcon} 
+          alt="Recording" 
+          className={`fj-voice-icon ${recording ? 'pulsing' : ''}`} 
+        />
+        {recording && (
+          <div className="fj-voice-dots-row">
+            <span></span><span></span><span></span>
           </div>
-        </div>
-      )}
+        )}
+        <img src={journalIcon} alt="Journal" className="fj-journal-icon" />
+      </div>
+      
+      <p>
+        {recording 
+          ? "Recording... Speak now. Your words will be transcribed automatically." 
+          : "Processing your recording..."}
+      </p>
+      
+      <button 
+        onClick={stopRecording}
+        disabled={!recording}
+        className={recording ? 'recording-active' : ''}
+      >
+        {recording ? '🛑 Stop Recording' : 'Processing...'}
+      </button>
+    </div>
+  </div>
+)}
 
-      {/* AI REFLECTION POPUP */}
+      {/* AI REFLECTION OVERLAY */}
       {aiOpen && (
         <div className="fj-ai-overlay">
-          <div className="fj-ai-box">
-            <span className="fj-ai-close-icon" onClick={() => setAiOpen(false)}>
-              &times;
-            </span>
-            {loading ? (
-              <div className="fj-ai-loading">
-                <div className="fj-ai-spinner"></div>
-                <p>✨ Thinking about your thoughts…</p>
+          <div className="fj-ai-container">
+            <div className="fj-ai-header">
+              <div className="fj-ai-title">
+                <img src={magicIcon} alt="Magic" className="fj-ai-title-icon" />
+                <h2>AI Reflection</h2>
               </div>
-            ) : (
-              <>
-                <h2 className="fj-ai-title">AI Reflection Summary</h2>
-                <p className="fj-ai-intro">Here's a concise reflection based on your journal entry:</p>
-                <div className="fj-ai-content">
-                  <div className="fj-ai-section">
-                    <h4>🌸 Mood Detected:</h4>
-                    <p>Calm and thoughtful</p>
+              <button 
+                className="fj-ai-close-btn"
+                onClick={() => setAiOpen(false)}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="fj-ai-content">
+              {loading ? (
+                <div className="fj-ai-loading">
+                  <div className="fj-ai-spinner-container">
+                    {/* Magic Wand Animation */}
+                    <div className="fj-magic-wand">
+                      <div className="fj-magic-circle"></div>
+                      <div className="fj-sparkle">✨</div>
+                    </div>
+                    
+                    {/* Bouncing Dots */}
+                    <div className="fj-dots-container">
+                      <div className="fj-dot fj-dot-1"></div>
+                      <div className="fj-dot fj-dot-2"></div>
+                      <div className="fj-dot fj-dot-3"></div>
+                      <div className="fj-dot fj-dot-4"></div>
+                    </div>
                   </div>
-                  <div className="fj-ai-section">
-                    <h4>💭 Insight:</h4>
-                    <p>You seem to be processing something meaningful in your life.</p>
-                  </div>
-                  <div className="fj-ai-section">
-                    <h4>🌱 Questions to Explore:</h4>
-                    <ul>
-                      <li>What triggered these thoughts?</li>
-                      <li>What do you need right now?</li>
-                      <li>How can you take positive steps forward?</li>
-                    </ul>
+                  
+                  <p className="fj-loading-text">Reading your journal with care</p>
+                  
+                  <div className="fj-loading-subtitle">
+                    <div className="fj-loading-words">
+                      <span>Finding insights</span>
+                      <span>Analyzing patterns</span>
+                      <span>Preparing reflections</span>
+                      <span>Almost ready</span>
+                    </div>
                   </div>
                 </div>
-              </>
-            )}
+              ) : (
+                aiReflection && (
+                  <div className="fj-ai-reflection">
+                    {/* MOOD SECTION */}
+                    <div className="fj-ai-section fj-mood-section">
+                      <div className="fj-section-header">
+                        <span className="fj-section-icon">🎭</span>
+                        <h3>Current Mood</h3>
+                      </div>
+                      <div className={`fj-mood-display fj-mood-${aiReflection.mood}`}>
+                        <span className="fj-mood-text">{aiReflection.mood}</span>
+                      </div>
+                    </div>
+
+                    {/* SUMMARY SECTION */}
+                    <div className="fj-ai-section">
+                      <div className="fj-section-header">
+                        <span className="fj-section-icon">📖</span>
+                        <h3>Summary</h3>
+                      </div>
+                      <div className="fj-summary-text">
+                        {aiReflection.summary}
+                      </div>
+                    </div>
+
+                    {/* INSIGHTS SECTION */}
+                    <div className="fj-ai-section">
+                      <div className="fj-section-header">
+                        <span className="fj-section-icon">💎</span>
+                        <h3>Key Insights</h3>
+                      </div>
+                      <div className="fj-insights-grid">
+                        {aiReflection.insights.map((insight, index) => (
+                          <div key={index} className="fj-insight-card">
+                            <div className="fj-insight-bullet"></div>
+                            <p>{insight}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* QUESTIONS SECTION */}
+                    <div className="fj-ai-section">
+                      <div className="fj-section-header">
+                        <span className="fj-section-icon">🌱</span>
+                        <h3>Questions to Explore</h3>
+                      </div>
+                      <div className="fj-questions-list">
+                        {aiReflection.nextQuestions.map((question, index) => (
+                          <div key={index} className="fj-question-item">
+                            <span className="fj-question-marker">?</span>
+                            <p>{question}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* FLOWER SECTION */}
+                    {aiReflection.flower_type && (
+                      <div className="fj-ai-section fj-flower-section">
+                        <div className="fj-section-header">
+                          <span className="fj-section-icon">🌸</span>
+                          <h3>Garden Growth</h3>
+                        </div>
+                        <div className="fj-flower-message">
+                          Your reflection has planted a <span className="fj-flower-highlight">{aiReflection.flower_type}</span> in your garden
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* ENHANCED ERROR DISPLAY */}
-      {error && (
-        <div className={`fj-error ${errorType === 'CORS' ? 'fj-error-cors' : ''}`}>
-          <strong>
-            {errorType === 'CORS' ? '🛑 CORS Error' : 
-             errorType === 'AUTH' ? '🔐 Auth Error' : 
-             '❌ Error'}
-          </strong>
-          <p>{error}</p>
-          <div className="fj-error-actions">
-            {errorType === 'CORS' && (
-              <>
-                <button onClick={handleOpenBackend} className="fj-backend-btn">
-                  Check Backend
-                </button>
-                <button onClick={() => window.location.reload()} className="fj-retry-btn">
-                  Reload Page
-                </button>
-              </>
-            )}
-            {errorType === 'AUTH' && (
-              <button onClick={handleLoginRedirect} className="fj-login-btn">
-                Log In Again
+      {/* ⭐ PDF EXPORT CONFIRMATION DIALOG */}
+      {showExportConfirm && (
+        <div className="fj-export-overlay">
+          <div className="fj-export-confirm">
+            <div className="fj-export-header">
+              <img src={diskIcon} alt="PDF Export" className="fj-export-icon" />
+              <h3>Export to PDF</h3>
+            </div>
+            
+            <div className="fj-export-content">
+              <p>Your journal entry will be converted into a beautiful PDF document and downloaded automatically.</p>
+              <div className="fj-export-details">
+                <span className="fj-export-info">📄 Format: PDF Document</span>
+                <span className="fj-export-info">📝 Includes: Your journal content and writing hints</span>
+                <span className="fj-export-info">💫 Style: Professional journal layout</span>
+              </div>
+            </div>
+            
+            <div className="fj-export-actions">
+              <button 
+                className="fj-export-cancel"
+                onClick={() => setShowExportConfirm(false)}
+                disabled={exportLoading}
+              >
+                Cancel
               </button>
-            )}
-            <button onClick={handleRetryWithNewSession} className="fj-retry-btn">
-              Retry
-            </button>
-            <button onClick={() => setError(null)} className="fj-dismiss-btn">
-              Dismiss
-            </button>
+              <button 
+                className="fj-export-confirm-btn"
+                onClick={exportToPDF}
+                disabled={exportLoading}
+              >
+                {exportLoading ? (
+                  <>
+                    <span className="fj-export-spinner-small"></span>
+                    Exporting...
+                  </>
+                ) : (
+                  "Export PDF"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

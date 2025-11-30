@@ -152,6 +152,8 @@ const Navbar = () => {
               <Link to="/" className="dropdown-item"><img src={homeIcon} /> Home</Link>
               <Link to="/journal" className="dropdown-item"><img src={freeJournalIcon} /> Free Journal</Link>
               <Link to="/guided/journal" className="dropdown-item"><img src={guidedJournalIcon} /> Guided Journal</Link>
+              {/* ⭐ ADDED MY JOURNALS LINK - BEFORE MY GARDEN */}
+              <Link to="/saved-journals" className="dropdown-item">📓 My Journals</Link>
               <Link to="/garden" className="dropdown-item"><img src={gardenIcon} /> My Garden</Link>
               <a href="https://youtu.be/..." target="_blank" className="dropdown-item"><img src={videoIcon} /> Introduction Video</a>
               <a href="https://github.com/..." target="_blank" className="dropdown-item"><img src={githubIcon} /> GitHub</a>
