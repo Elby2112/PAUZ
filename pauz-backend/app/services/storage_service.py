@@ -1,12 +1,23 @@
 import os
 import boto3
+import sys
 from typing import List, Optional, Dict, Any
 
 from app.models import GuidedJournal
 
+# Add scripts directory to path to find mcp.py
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../scripts'))
+
 # These imports are for the tools provided by the MCP environment.
-# They are not standard library and will be available when run in the correct environment.
-from mcp import get_object, put_object, list_objects
+try:
+    from mcp import get_object, put_object, list_objects
+    print("✅ Using local MCP storage (mcp.py)")
+except ImportError as e:
+    print(f"❌ MCP storage not available: {e}")
+    # Fallback if mcp is not available
+    get_object = None
+    put_object = None
+    list_objects = None
 
 class StorageService:
     def __init__(self):
@@ -57,8 +68,16 @@ class StorageService:
         Saves journal data dictionary to SmartBucket.
         """
         key = self._get_journal_key(user_id, journal_id)
+        print(f"💾 Saving journal to bucket: {self.guided_journal_bucket}")
+        print(f"💾 Saving with key: {key}")
+        print(f"💾 User ID: {user_id}")
+        print(f"💾 Journal ID: {journal_id}")
+        print(f"💾 Journal topic: {journal_data.get('topic', 'unknown')}")
+        print(f"💾 Entries count: {len(journal_data.get('entries', []))}")
+        
         import json
         put_object(bucket_name=self.guided_journal_bucket, key=key, content=json.dumps(journal_data))
+        print(f"✅ Journal saved successfully to {key}")
 
     def get_guided_journal_data(self, user_id: str, journal_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -73,24 +92,52 @@ class StorageService:
             print(f"Error retrieving journal data: {e}")
             return None
 
+    def delete_guided_journal_data(self, user_id: str, journal_id: str) -> bool:
+        """
+        Deletes a journal from the SmartBucket.
+        """
+        try:
+            key = self._get_journal_key(user_id, journal_id)
+            # For MCP environment, we'll implement delete by setting a tombstone or using delete if available
+            # For now, we'll simulate delete by overwriting with empty data
+            put_object(bucket_name=self.guided_journal_bucket, key=key, content="DELETED")
+            return True
+        except Exception as e:
+            print(f"Error deleting journal data: {e}")
+            return False
+
     def get_user_guided_journals(self, user_id: str) -> List[Dict[str, Any]]:
         """
         Retrieves all guided journals for a user from SmartBucket.
         """
         try:
             prefix = self._get_user_prefix(user_id)
+            print(f"🔍 Looking for journals with prefix: {prefix}")
+            print(f"🔍 In bucket: {self.guided_journal_bucket}")
+            
             objects = list_objects(bucket_name=self.guided_journal_bucket, prefix=prefix)
+            print(f"🔍 Found {len(objects)} objects with prefix {prefix}")
+            
+            if objects:
+                for obj in objects:
+                    print(f"📁 Found object: {obj['key']}")
             
             journals = []
             import json
             for obj in objects:
                 key = obj['key']
-                journal_data = get_object(bucket_name=self.guided_journal_bucket, key=key)
-                journals.append(json.loads(journal_data))
+                try:
+                    journal_data = get_object(bucket_name=self.guided_journal_bucket, key=key)
+                    journal = json.loads(journal_data)
+                    print(f"📖 Loaded journal: {journal.get('id', 'unknown')} - {journal.get('topic', 'no topic')}")
+                    journals.append(journal)
+                except Exception as e:
+                    print(f"❌ Error loading journal {key}: {e}")
             
+            print(f"✅ Retrieved {len(journals)} guided journals for user {user_id}")
             return journals
         except Exception as e:
-            print(f"Error retrieving user journals: {e}")
+            print(f"❌ Error retrieving user journals: {e}")
             return []
 
     def save_guided_journal(self, guided_journal: GuidedJournal):

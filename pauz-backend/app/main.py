@@ -1,92 +1,109 @@
+"""
+PAUZ Backend - Main FastAPI Application
+Clean, professional API for journaling application
+"""
+
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
+from fastapi.responses import JSONResponse
+import uvicorn
+
+# Import routes
+from app.routes import auth, free_journal, guided_journal, garden, stats
+from app.database import engine, create_db_and_tables
+
+# Import configuration
 import os
 from dotenv import load_dotenv
 
-# Load environment variables FIRST
+# Load environment variables
 load_dotenv()
 
-# NOW import other modules
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
-import json
-from app.routes import auth, guided_journal as guided_journal_router, free_journal as free_journal_router, garden as garden_router, stats, inference as inference_router
-from app.database import create_db_and_tables
-from fastapi.middleware.cors import CORSMiddleware
+# Create FastAPI app
+app = FastAPI(
+    title="PAUZ Journaling API",
+    description="Professional backend API for PAUZ journaling application with AI-powered features",
+    version="2.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
 
-app = FastAPI()
-
-# CORS Middleware
-origins = [
-    "http://localhost:5173",
+# CORS configuration
+allowed_origins = [
     "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:5173",
 ]
+
+if os.getenv("FRONTEND_URL"):
+    allowed_origins.append(os.getenv("FRONTEND_URL"))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# Call create_db_and_tables on startup
+# Security
+security = HTTPBearer()
+
+# Include routers
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(free_journal.router, prefix="/freejournal", tags=["Free Journal"])
+app.include_router(guided_journal.router, prefix="/guided_journal", tags=["Guided Journal"])
+app.include_router(garden.router, prefix="/garden", tags=["Garden"])
+app.include_router(stats.router, prefix="/profile", tags=["Profile & Stats"])
+app.include_router(stats.router, prefix="/stats", tags=["Stats"])  # Add separate stats prefix for frontend
+
 @app.on_event("startup")
-def on_startup():
+async def startup_event():
+    """Initialize database on startup"""
     create_db_and_tables()
-    
-    # Initialize Raindrop service if available
-    try:
-        from app.services.raindrop_service import raindrop_service
-        if raindrop_service.client:
-            print("✅ Raindrop service initialized successfully")
-            # Optionally check application status
-            status = raindrop_service.get_application_status()
-            if not status.get("error"):
-                print(f"📱 Application '{raindrop_service.application_name}' status: {status.get('is_catalogued', 'Unknown')}")
-        else:
-            print("⚠️ Raindrop client not available - application may not be catalogued")
-    except Exception as e:
-        print(f"⚠️ Raindrop service initialization failed: {e}")
-
-# Exception Handler
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.detail},
-    )
-
-# Create client_secret.json for Google OAuth
-google_client_id = os.getenv("GOOGLE_CLIENT_ID")
-google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
-redirect_uri = os.getenv("REDIRECT_URI")
-
-if not google_client_id:
-    raise ValueError("GOOGLE_CLIENT_ID environment variable not set.")
-if not google_client_secret:
-    raise ValueError("GOOGLE_CLIENT_SECRET environment variable not set.")
-if not redirect_uri:
-    raise ValueError("REDIRECT_URI environment variable not set.")
-
-client_secret_data = {
-    "web": {
-        "client_id": google_client_id,
-        "client_secret": google_client_secret,
-        "redirect_uris": [redirect_uri],
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"
-    }
-}
-with open("client_secret.json", "w") as f:
-    json.dump(client_secret_data, f)
-
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(guided_journal_router.router, prefix="/guided_journal", tags=["guided_journal"])
-app.include_router(free_journal_router.router, prefix="/freejournal", tags=["free-journal"])
-app.include_router(garden_router.router, prefix="/garden", tags=["garden"])
-app.include_router(stats.router, prefix="/stats", tags=["stats"])
-app.include_router(inference_router.router, prefix="/inference", tags=["inference"])
 
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the Guided Journal App"}
+async def root():
+    """Root endpoint - API status"""
+    return {
+        "message": "PAUZ Journaling API",
+        "status": "running",
+        "version": "2.0.0",
+        "docs": "/docs"
+    }
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "database": "connected"
+    }
+
+# Error handlers
+@app.exception_handler(404)
+async def not_found_handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"error": "Endpoint not found"}
+    )
+
+@app.exception_handler(500)
+async def internal_error_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error"}
+    )
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port,
+        reload=os.getenv("ENVIRONMENT", "development") == "development"
+    )

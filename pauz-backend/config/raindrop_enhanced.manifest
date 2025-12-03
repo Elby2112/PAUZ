@@ -1,0 +1,20 @@
+application "pauz-journaling" {
+  # PostgreSQL Database Resource
+  database "pauz-db" {
+    name = "pauz-journaling"
+  }
+
+  # SmartBuckets for AI-generated content and large files
+  smartbucket "journal-prompts" {}
+  smartbucket "journal-analysis" {}
+  smartbucket "free-journals" {}
+  smartbucket "hints" {}
+  smartbucket "garden" {}
+  smartbucket "pdf-exports" {}
+  smartbucket "audio-files" {}
+
+  # SmartMemories for AI context and user sessions
+  smartmemory "user-memories" {}
+  smartmemory "ai-contexts" {}
+  smartmemory "session-cache" {}
+}

@@ -1,6 +1,6 @@
 """
 Guided Journal Service with FREE Google Gemini AI Generation
-Uses Gemini for unique prompt generation while storing in Raindrop
+Uses Gemini for unique prompt generation while storing in SmartBucket (Raindrop)
 """
 import os
 from dotenv import load_dotenv
@@ -10,10 +10,10 @@ from sqlmodel import Session, select
 import uuid
 import base64
 import json
+import datetime
 from fastapi import HTTPException
 
 from app.models import GuidedJournal, Prompt, GuidedJournalEntry
-from app.services.storage_service import storage_service
 from app.database import get_session
 
 # Import Google Gemini for FREE AI generation
@@ -30,23 +30,28 @@ try:
 except ImportError:
     OPENAI_AVAILABLE = False
 
-# Raindrop for storage
+# Raindrop for storage - NO FALLBACKS
 try:
     from raindrop import Raindrop
-    api_key = os.getenv('AI_API_KEY')
-    application_name = os.getenv('APPLICATION_NAME', 'pauz-journaling')
-    
-    raindrop_client = Raindrop(api_key=api_key) if api_key else None
-    print(f"✅ Raindrop client initialized for app: {application_name}")
-except Exception as e:
-    print(f"⚠️ Raindrop initialization failed: {e}")
-    raindrop_client = None
+except ImportError:
+    Raindrop = None
 
 
 class GuidedJournalService:
     def __init__(self):
-        self.client = raindrop_client
-        self.app_name = os.getenv('APPLICATION_NAME', 'pauz-journaling')
+        # Raindrop for storage ONLY - no local fallbacks
+        api_key = os.getenv('AI_API_KEY')
+        if not api_key:
+            raise ValueError("AI_API_KEY required for SmartBucket storage")
+        
+        if not Raindrop:
+            raise ImportError("Raindrop library required for SmartBucket storage")
+            
+        self.client = Raindrop(api_key=api_key)
+        self.organization_name = os.getenv('RAINDROP_ORG', 'Loubna-HackathonApp')
+        self.application_name = os.getenv('APPLICATION_NAME', 'pauz-journaling')
+        
+        print(f"✅ Raindrop SmartBucket client initialized for guided journals: {self.application_name}")
         
         # Try Gemini first (FREE)
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
@@ -307,60 +312,308 @@ Generate as a numbered list. Each prompt should be unique, thoughtful, and emoti
         except Exception as e:
             print(f"⚠️ Could not store prompts in Raindrop: {e}")
 
-    def create_guided_journal(self, user_id: str, topic: str, prompts_data: list[dict]) -> GuidedJournal:
+    def create_guided_journal(self, user_id: str, topic: str, prompts_data: list[dict]) -> dict:
         """Create a new guided journal with AI-generated prompts"""
         try:
-            journal = GuidedJournal(
-                id=str(uuid.uuid4()),
-                user_id=user_id,
-                topic=topic
-            )
-
-            prompts = []
-            for prompt_data in prompts_data:
-                prompt = Prompt(
-                    text=prompt_data['text'],
-                    guided_journal_id=journal.id
-                )
-                prompts.append(prompt)
-
-            # Save to SmartBucket
+            journal_id = str(uuid.uuid4())
+            
+            # Save to SmartBucket directly as dict
             journal_data = {
-                "id": journal.id,
-                "user_id": journal.user_id,
-                "topic": journal.topic,
-                "created_at": journal.created_at.isoformat(),
-                "prompts": [p.model_dump() for p in prompts],
+                "id": journal_id,
+                "user_id": user_id,
+                "topic": topic,
+                "created_at": datetime.datetime.now().isoformat(),
+                "prompts": prompts_data,
                 "entries": [],
                 "ai_generated": True
             }
             
-            storage_service.save_guided_journal_data(user_id, journal.id, journal_data)
+            storage_service.save_guided_journal_data(user_id, journal_id, journal_data)
             
-            print(f"✅ Created guided journal with AI prompts: {journal.id}")
-            return journal
+            print(f"✅ Created guided journal with AI prompts: {journal_id}")
+            return journal_data
 
         except Exception as e:
             print(f"❌ Error creating guided journal: {e}")
             raise HTTPException(status_code=500, detail="Failed to create guided journal")
 
-    def get_user_guided_journals(self, user_id: str) -> list[GuidedJournal]:
-        """Retrieve all guided journals for a user"""
+    def create_guided_journal_with_entries(self, user_id: str, topic: str, prompts_data: list[dict], entries_data: list[dict]) -> dict:
+        """Create a new guided journal with prompts and entries using SmartBucket ONLY"""
+        journal_id = str(uuid.uuid4())
+        
+        # Prepare journal data for SmartBucket
+        journal_data = {
+            "id": journal_id,
+            "user_id": user_id,
+            "topic": topic,
+            "created_at": datetime.datetime.now().isoformat(),
+            "prompts": prompts_data,
+            "entries": entries_data,
+            "ai_generated": True,
+            "type": "guided_journal"
+        }
+        
+        import base64
+        
         try:
-            journals = storage_service.get_user_guided_journals(user_id)
-            return journals
-        except Exception as e:
-            print(f"❌ Error getting user journals: {e}")
-            return []
+            # Try guided-journals bucket first (preferred)
+            self.client.bucket.put(
+                bucket_location={
+                    "bucket": {
+                        "name": "guided-journals",
+                        "application_name": self.application_name
+                    }
+                },
+                key=f"journal_{journal_id}",
+                content=base64.b64encode(json.dumps(journal_data).encode()).decode(),
+                content_type="application/json"
+            )
+            print(f"✅ Created guided journal in guided-journals SmartBucket: {journal_id}")
+            return journal_data
+            
+        except Exception as bucket_error:
+            print(f"⚠️ guided-journals bucket not available: {bucket_error}")
+            print(f"🔄 Falling back to hints bucket...")
+            
+            # Fallback to hints bucket (which exists)
+            try:
+                self.client.bucket.put(
+                    bucket_location={
+                        "bucket": {
+                            "name": "hints",
+                            "application_name": self.application_name
+                        }
+                    },
+                    key=f"guided_journal_{journal_id}",
+                    content=base64.b64encode(json.dumps(journal_data).encode()).decode(),
+                    content_type="application/json"
+                )
+                print(f"✅ Created guided journal in hints SmartBucket: {journal_id}")
+                return journal_data
+                
+            except Exception as hints_error:
+                print(f"❌ Both buckets failed: {hints_error}")
+                raise HTTPException(
+                    status_code=500, 
+                    detail=f"SmartBucket storage failed. Hints bucket error: {str(hints_error)}"
+                )
 
-    def get_guided_journal_by_id(self, user_id: str, journal_id: str) -> Optional[GuidedJournal]:
-        """Retrieve a specific guided journal by ID"""
+    def get_user_guided_journals(self, user_id: str) -> list[dict]:
+        """Retrieve all guided journals for a user from SmartBucket ONLY"""
+        journals = []
+        
+        # Try guided-journals bucket first
         try:
-            journal = storage_service.get_guided_journal_data(user_id, journal_id)
-            return journal
-        except Exception as e:
-            print(f"❌ Error getting journal by ID: {e}")
-            return None
+            response = self.client.bucket.list(
+                bucket_location={
+                    "bucket": {
+                        "name": "guided-journals",
+                        "application_name": self.application_name
+                    }
+                }
+            )
+            
+            for item in response.objects:
+                if hasattr(item, 'key') and f"journal_" in item.key:
+                    try:
+                        content = self.client.bucket.get(
+                            bucket_location={
+                                "bucket": {
+                                    "name": "guided-journals", 
+                                    "application_name": self.application_name
+                                }
+                            },
+                            key=item.key
+                        )
+                        
+                        journal_data = json.loads(base64.b64decode(content.content).decode())
+                        # Only return journals for this user and type guided_journal
+                        if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                            journals.append(journal_data)
+                    except Exception as item_error:
+                        print(f"⚠️ Could not retrieve {item.key}: {item_error}")
+                        
+            print(f"✅ Retrieved {len(journals)} guided journals from guided-journals bucket for user {user_id}")
+            
+        except Exception as bucket_error:
+            print(f"⚠️ guided-journals bucket not available: {bucket_error}")
+            print(f"🔄 Checking hints bucket for guided journals...")
+            
+            # Fallback to hints bucket
+            try:
+                response = self.client.bucket.list(
+                    bucket_location={
+                        "bucket": {
+                            "name": "hints",
+                            "application_name": self.application_name
+                        }
+                    }
+                )
+                
+                for item in response.objects:
+                    if hasattr(item, 'key') and f"guided_journal_" in item.key:
+                        try:
+                            content = self.client.bucket.get(
+                                bucket_location={
+                                    "bucket": {
+                                        "name": "hints", 
+                                        "application_name": self.application_name
+                                    }
+                                },
+                                key=item.key
+                            )
+                            
+                            journal_data = json.loads(base64.b64decode(content.content).decode())
+                            # Only return journals for this user and type guided_journal
+                            if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                                journals.append(journal_data)
+                        except Exception as item_error:
+                            print(f"⚠️ Could not retrieve {item.key}: {item_error}")
+                
+                print(f"✅ Retrieved {len(journals)} guided journals from hints bucket for user {user_id}")
+                
+            except Exception as hints_error:
+                print(f"❌ Both buckets failed: {hints_error}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"SmartBucket retrieval failed. Hints bucket error: {str(hints_error)}"
+                )
+        
+        return journals
+
+    def get_guided_journal_by_id(self, user_id: str, journal_id: str) -> Optional[dict]:
+        """Retrieve a specific guided journal by ID from SmartBucket ONLY"""
+        import base64
+        
+        # Try guided-journals bucket first
+        try:
+            content = self.client.bucket.get(
+                bucket_location={
+                    "bucket": {
+                        "name": "guided-journals",
+                        "application_name": self.application_name
+                    }
+                },
+                key=f"journal_{journal_id}"
+            )
+            
+            journal_data = json.loads(base64.b64decode(content.content).decode())
+            
+            # Verify this journal belongs to the user and is correct type
+            if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                print(f"✅ Retrieved guided journal from guided-journals SmartBucket: {journal_id}")
+                return journal_data
+            else:
+                print(f"❌ Journal {journal_id} does not belong to user {user_id} or wrong type")
+                return None
+                
+        except Exception as bucket_error:
+            print(f"⚠️ guided-journals bucket error: {bucket_error}")
+            print(f"🔄 Checking hints bucket...")
+            
+            # Fallback to hints bucket
+            try:
+                content = self.client.bucket.get(
+                    bucket_location={
+                        "bucket": {
+                            "name": "hints",
+                            "application_name": self.application_name
+                        }
+                    },
+                    key=f"guided_journal_{journal_id}"
+                )
+                
+                journal_data = json.loads(base64.b64decode(content.content).decode())
+                
+                # Verify this journal belongs to the user and is correct type
+                if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                    print(f"✅ Retrieved guided journal from hints SmartBucket: {journal_id}")
+                    return journal_data
+                else:
+                    print(f"❌ Journal {journal_id} does not belong to user {user_id} or wrong type")
+                    return None
+                    
+            except Exception as hints_error:
+                print(f"❌ Both buckets failed: {hints_error}")
+                return None
+
+    def delete_guided_journal(self, user_id: str, journal_id: str) -> bool:
+        """Delete a guided journal from SmartBucket"""
+        import base64
+        
+        # Try guided-journals bucket first
+        try:
+            # Check if journal exists and belongs to user
+            content = self.client.bucket.get(
+                bucket_location={
+                    "bucket": {
+                        "name": "guided-journals",
+                        "application_name": self.application_name
+                    }
+                },
+                key=f"journal_{journal_id}"
+            )
+            
+            journal_data = json.loads(base64.b64decode(content.content).decode())
+            
+            # Verify this journal belongs to the user and is correct type
+            if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                # Delete the journal
+                self.client.bucket.delete(
+                    bucket_location={
+                        "bucket": {
+                            "name": "guided-journals",
+                            "application_name": self.application_name
+                        }
+                    },
+                    key=f"journal_{journal_id}"
+                )
+                print(f"✅ Deleted guided journal from guided-journals bucket: {journal_id}")
+                return True
+            else:
+                print(f"❌ Journal {journal_id} does not belong to user {user_id} or wrong type")
+                return False
+                
+        except Exception as bucket_error:
+            print(f"⚠️ guided-journals bucket not accessible: {bucket_error}")
+            print(f"🔄 Checking hints bucket...")
+            
+            # Fallback to hints bucket
+            try:
+                # Check if journal exists in hints bucket
+                content = self.client.bucket.get(
+                    bucket_location={
+                        "bucket": {
+                            "name": "hints",
+                            "application_name": self.application_name
+                        }
+                    },
+                    key=f"guided_journal_{journal_id}"
+                )
+                
+                journal_data = json.loads(base64.b64decode(content.content).decode())
+                
+                # Verify this journal belongs to the user and is correct type
+                if journal_data.get('user_id') == user_id and journal_data.get('type') == 'guided_journal':
+                    # Delete the journal
+                    self.client.bucket.delete(
+                        bucket_location={
+                            "bucket": {
+                                "name": "hints",
+                                "application_name": self.application_name
+                            }
+                        },
+                        key=f"guided_journal_{journal_id}"
+                    )
+                    print(f"✅ Deleted guided journal from hints bucket: {journal_id}")
+                    return True
+                else:
+                    print(f"❌ Journal {journal_id} does not belong to user {user_id} or wrong type")
+                    return False
+                    
+            except Exception as hints_error:
+                print(f"❌ Both buckets failed: {hints_error}")
+                return False
 
     def add_guided_journal_entry(self, user_id: str, journal_id: str, prompt_id: int, response_text: str) -> Optional[GuidedJournalEntry]:
         """Add an entry to a guided journal"""

@@ -1,8 +1,16 @@
 import os
 from datetime import datetime, timedelta
 from typing import Optional
+import logging
 from jose import JWTError, jwt
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Configure JWT logging
+jwt_logger = logging.getLogger('jwt_service')
 
 class TokenData(BaseModel):
     email: Optional[str] = None
@@ -16,7 +24,7 @@ if not JWT_SECRET_KEY:
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=30)
+    expire = datetime.utcnow() + timedelta(hours=24)  # Changed from 30 minutes to 24 hours
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
     return encoded_jwt

@@ -116,10 +116,19 @@ def save_user_content_route(
     Saves user content to a specific Free Journal session.
     """
     try:
+        # ⭐ FIXED: Check for empty content before attempting to save
+        if not data.content or not data.content.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Cannot save empty journal content."
+            )
+        
         free_journal = free_journal_service.save_user_content(session_id, current_user.id, data.content, db)
         return free_journal
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/{session_id}/hints", response_model=HintResponse)
 def get_hints_route(

@@ -24,4 +24,16 @@ class GardenService:
         """
         return db.exec(select(Garden).where(Garden.user_id == user_id)).all()
 
+    def delete_garden_entry(self, flower_id: int, user_id: str, db: Session = Depends(get_session)) -> bool:
+        """
+        Deletes a garden entry for a user.
+        Returns True if deleted successfully, False if not found.
+        """
+        garden_entry = db.exec(select(Garden).where(Garden.id == flower_id, Garden.user_id == user_id)).first()
+        if garden_entry:
+            db.delete(garden_entry)
+            db.commit()
+            return True
+        return False
+
 garden_service = GardenService()

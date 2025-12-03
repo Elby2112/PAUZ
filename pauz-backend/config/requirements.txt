@@ -1,0 +1,13 @@
+lm-raindrop-integrations
+fastapi
+uvicorn
+google-auth-oauthlib
+google-api-python-client
+pydantic
+python-dotenv
+reportlab
+boto3
+elevenlabs
+python-jose[cryptography]
+passlib[bcrypt]
+sqlmodel

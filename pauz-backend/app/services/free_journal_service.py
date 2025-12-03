@@ -17,7 +17,6 @@ from app.models import FreeJournal, Hint
 from app.database import get_session
 from fastapi import Depends
 from app.services.garden_service import garden_service
-from app.services.storage_service import storage_service
 from app.utils import pdf_generator
 
 # Import Google Gemini for FREE AI generation
@@ -37,11 +36,21 @@ except ImportError:
 
 class FreeJournalService:
     def __init__(self):
-        # Raindrop for storage
+        # Raindrop for storage - NO FALLBACKS
         api_key = os.getenv('AI_API_KEY')
-        self.client = Raindrop(api_key=api_key) if api_key else None
+        if not api_key:
+            raise ValueError("AI_API_KEY required for SmartBucket storage")
+            
+        try:
+            from raindrop import Raindrop
+        except ImportError:
+            raise ImportError("Raindrop library required for SmartBucket storage")
+            
+        self.client = Raindrop(api_key=api_key)
         self.organization_name = os.getenv('RAINDROP_ORG', 'Loubna-HackathonApp')
         self.application_name = os.getenv('APPLICATION_NAME', 'pauz-journaling')
+        
+        print(f"✅ Raindrop SmartBucket client initialized for free journals: {self.application_name}")
         
         # Try Gemini first (FREE)
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
@@ -257,7 +266,7 @@ Generate ONE thoughtful question or prompt to help them continue writing deeper.
             try:
                 system_prompt = """You are an empathetic emotional intelligence coach. Analyze the journal entry and provide:
 
-1. The primary emotion/mood (choose one: happy, sad, anxious, calm, reflective)
+1. The primary emotion/mood (choose one: happy, sad, anxious, calm, reflective, excited, grateful)
 2. 2-3 deep insights about what this reveals
 3. A brief summary of the entry
 4. 2-3 thoughtful follow-up questions
@@ -293,15 +302,17 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
                     analysis.setdefault('summary', content[:100] + "..." if len(content) > 100 else content)
                     analysis.setdefault('nextQuestions', ['What would you like to explore further?'])
                     
-                    # Add flower mapping
+                    # Add flower mapping - matches frontend exactly
                     flower_mapping = {
-                        "happy": "sunflower",
-                        "sad": "bluebell",
-                        "anxious": "lavender", 
-                        "calm": "lotus",
-                        "reflective": "chamomile"
+                        "happy": "happy",
+                        "sad": "sad", 
+                        "anxious": "anxious",
+                        "calm": "calm",
+                        "reflective": "reflective",
+                        "excited": "excited",
+                        "grateful": "grateful"
                     }
-                    analysis['flower_type'] = flower_mapping.get(analysis['mood'], 'wildflower')
+                    analysis['flower_type'] = flower_mapping.get(analysis['mood'], 'calm')
                     
                     print(f"✅ Gemini analysis: {analysis['mood']} mood")
                     return analysis
@@ -326,7 +337,12 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
                           sort_by: str = "created_at",
                           order: str = "desc") -> List[FreeJournal]:
         """Retrieve all Free Journal sessions for a user with filtering"""
-        query = select(FreeJournal).where(FreeJournal.user_id == user_id)
+        # ⭐ FIXED: Filter out empty journals by default
+        query = select(FreeJournal).where(
+            FreeJournal.user_id == user_id,
+            FreeJournal.content != "",  # Exclude empty content
+            FreeJournal.content.is_not(None)  # Exclude null content
+        )
         
         # Date filtering
         if start_date:
@@ -378,6 +394,10 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
 
     def save_user_content(self, session_id: str, user_id: str, content: str, db: Session = Depends(get_session)) -> FreeJournal:
         """Save user content to the free journal"""
+        # ⭐ FIXED: Don't save empty content
+        if not content or not content.strip():
+            raise ValueError("Cannot save empty journal content.")
+        
         free_journal = self.get_free_journal_by_session_id(session_id, user_id, db)
         if not free_journal:
             raise ValueError("Free Journal session not found.")
@@ -425,16 +445,31 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
             if len(audio_file) > 25 * 1024 * 1024:  # 25MB limit
                 raise ValueError("Audio file too large (max 25MB)")
 
-            # Upload audio to storage
+            # Upload audio to SmartBucket - NO FALLBACKS
             audio_id = str(uuid.uuid4())
-            print(f"📁 Uploading audio to storage with ID: {audio_id}")
+            print(f"📁 Uploading audio to SmartBucket with ID: {audio_id}")
 
             try:
-                storage_service.upload_audio(user_id=user_id, audio_id=audio_id, audio_data=audio_file)
-                print("✅ Audio uploaded to storage successfully")
+                # Convert bytes to base64 for SmartBucket storage
+                import base64
+                audio_base64 = base64.b64encode(audio_file).decode('utf-8')
+                
+                # Store in SmartBucket using existing journal-prompts bucket
+                self.client.bucket.put(
+                    bucket_location={
+                        "bucket": {
+                            "name": "journal-prompts",
+                            "application_name": self.application_name
+                        }
+                    },
+                    key=f"voice_recording_{audio_id}",
+                    content=audio_base64,
+                    content_type="audio/wav"
+                )
+                print("✅ Audio uploaded to SmartBucket successfully")
             except Exception as storage_error:
-                print(f"⚠️ Storage upload failed: {storage_error}")
-                # Continue with transcription even if storage fails
+                print(f"❌ SmartBucket audio upload failed: {storage_error}")
+                raise ValueError(f"SmartBucket audio storage failed: {storage_error}")
 
             # Transcribe using ElevenLabs
             print("🔊 Starting ElevenLabs transcription...")
@@ -496,7 +531,9 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
             "sad": ["sad", "disappointed", "grief", "melancholy", "blue", "down", "upset", "hurt", "sorrowful", "depressed", "mournful"],
             "anxious": ["anxious", "worried", "stressed", "nervous", "tense", "overwhelmed", "afraid", "fearful", "restless", "uneasy"],
             "calm": ["calm", "peaceful", "relaxed", "serene", "tranquil", "centered", "balanced", "still", "quiet", "content"],
-            "reflective": ["reflective", "thoughtful", "contemplative", "pensive", "introspective", "curious", "wondering", "considering"]
+            "reflective": ["reflective", "thoughtful", "contemplative", "pensive", "introspective", "curious", "wondering", "considering"],
+            "excited": ["excited", "thrilled", "enthusiastic", "eager", "energetic", "enthusiastic", "pumped", "stoked", "jazzed", "exhilarated"],
+            "grateful": ["grateful", "thankful", "appreciate", "blessed", "gratitude", "thankful", "appreciative", "indebted", "obliged"]
         }
         
         mood_scores = {}
@@ -528,15 +565,21 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
             next_questions = ["What do you need in this moment?", "Who can support you?"]
         elif primary_mood == "anxious":
             next_questions = ["What's one small step you can take?", "What would feel calming right now?"]
+        elif primary_mood == "excited":
+            next_questions = ["What are you most looking forward to?", "How can you channel this energy?"]
+        elif primary_mood == "grateful":
+            next_questions = ["What else are you thankful for?", "How can you express this gratitude?"]
         else:
             next_questions = ["What deeper truth is emerging?", "How does this reflection serve you?"]
         
         flower_mapping = {
-            "happy": "sunflower",
-            "sad": "bluebell",
-            "anxious": "lavender",
-            "calm": "lotus",
-            "reflective": "chamomile"
+            "happy": "happy",
+            "sad": "sad",
+            "anxious": "anxious",
+            "calm": "calm",
+            "reflective": "reflective",
+            "excited": "excited",
+            "grateful": "grateful"
         }
         
         return {
@@ -544,7 +587,7 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
             "insights": insights,
             "summary": content[:150] + "..." if len(content) > 150 else content,
             "nextQuestions": next_questions,
-            "flower_type": flower_mapping.get(primary_mood, "wildflower")
+            "flower_type": flower_mapping.get(primary_mood, "calm")
         }
 
     def reflect_with_ai(self, session_id: str, user_id: str, db: Session = Depends(get_session)) -> dict:
@@ -571,7 +614,7 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
         return analysis
 
     def export_to_pdf(self, session_id: str, user_id: str, db: Session = Depends(get_session)) -> str:
-        """Export a free journal to PDF"""
+        """Export a free journal to PDF using Vultr S3"""
         free_journal = self.get_free_journal_by_session_id(session_id, user_id, db)
         if not free_journal:
             raise ValueError("Free Journal session not found.")
@@ -579,7 +622,27 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
         hints = self.get_hints_for_session(session_id, user_id, db)
         
         pdf_bytes = pdf_generator.generate_pdf_free_journal(free_journal, hints)
-        pdf_url = storage_service.upload_pdf(f"free_journal_{session_id}", pdf_bytes)
+        
+        # Upload to Vultr S3 directly - NO FALLBACKS
+        import boto3
+        vultr_access_key = os.getenv("VULTR_ACCESS_KEY")
+        vultr_secret_key = os.getenv("VULTR_SECRET_KEY")
+        vultr_region = os.getenv("VULTR_REGION")
+        vultr_bucket_name = os.getenv("VULTR_BUCKET_NAME")
+        
+        if not all([vultr_access_key, vultr_secret_key, vultr_region, vultr_bucket_name]):
+            raise ValueError("Vultr S3 credentials required for PDF export")
+        
+        s3 = boto3.client('s3',
+                         aws_access_key_id=vultr_access_key,
+                         aws_secret_access_key=vultr_secret_key,
+                         region_name=vultr_region,
+                         endpoint_url=f'https://{vultr_region}.vultrobjects.com')
+        
+        file_name = f"free_journal_{session_id}.pdf"
+        s3.put_object(Bucket=vultr_bucket_name, Key=file_name, Body=pdf_bytes, ACL='public-read')
+        
+        pdf_url = f"https://{vultr_bucket_name}.{vultr_region}.vultrobjects.com/{file_name}"
         return pdf_url
 
 free_journal_service = FreeJournalService()

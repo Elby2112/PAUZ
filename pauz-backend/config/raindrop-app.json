@@ -1,0 +1,88 @@
+{
+  "name": "Pauz - AI Journaling App",
+  "description": "A smart journaling application with AI-powered prompts, mood tracking, and reflection features. Includes guided journaling, free-form journaling with hints, voice-to-text capabilities, and a personal garden for tracking emotional insights.",
+  "version": "1.0.0",
+  "author": "PAUZ Team",
+  "application_name": "pauz-journaling",
+  "category": "Productivity & Wellness",
+  "tags": ["journaling", "ai", "wellness", "productivity", "mood-tracking"],
+  "entry_point": "app/main:app",
+  "runtime": "python",
+  "api_routes": [
+    {
+      "path": "/",
+      "method": "GET",
+      "description": "Welcome endpoint"
+    },
+    {
+      "path": "/auth/login",
+      "method": "GET", 
+      "description": "Google OAuth login"
+    },
+    {
+      "path": "/journal/prompts",
+      "method": "POST",
+      "description": "Generate AI journal prompts"
+    },
+    {
+      "path": "/freejournal/",
+      "method": "POST",
+      "description": "Create free journal session"
+    },
+    {
+      "path": "/garden/",
+      "method": "GET",
+      "description": "Get garden entries"
+    }
+  ],
+  "smart_buckets": [
+    {
+      "name": "journal-prompts",
+      "description": "AI-generated journal prompts and hints"
+    },
+    {
+      "name": "journal-analysis", 
+      "description": "AI analysis of journal entries for mood and insights"
+    },
+    {
+      "name": "FreeJournals",
+      "description": "User's free-form journal entries"
+    },
+    {
+      "name": "Hints",
+      "description": "Writing hints and suggestions"
+    },
+    {
+      "name": "Garden",
+      "description": "Mood tracking and personal insights"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "provider": "google",
+    "description": "Google OAuth authentication"
+  },
+  "external_integrations": [
+    {
+      "name": "ElevenLabs",
+      "description": "Voice-to-text transcription"
+    },
+    {
+      "name": "Vultr Object Storage",
+      "description": "PDF export storage"
+    }
+  ],
+  "environment_variables": [
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET", 
+    "REDIRECT_URI",
+    "AI_API_KEY",
+    "SMARTBUCKET_NAME",
+    "ELEVENLABS_API_KEY",
+    "JWT_SECRET_KEY"
+  ],
+  "documentation": {
+    "readme": "README.md",
+    "api_docs": "/docs"
+  }
+}

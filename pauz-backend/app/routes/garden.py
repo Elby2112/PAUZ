@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from app.services.garden_service import garden_service
 from app.models import Garden, User
@@ -26,6 +26,14 @@ class GardenResponse(BaseModel):
     class Config:
         from_attributes = True # To allow mapping from SQLModel to Pydantic
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "mood": self.mood,
+            "date": self.created_at.strftime("%Y-%m-%d"),
+            "note": self.note
+        }
+
 @router.post("/", response_model=GardenResponse)
 def create_garden_entry_route(
     garden_create: GardenCreate, 
@@ -44,13 +52,45 @@ def create_garden_entry_route(
     )
     return garden_entry
 
-@router.get("/", response_model=List[GardenResponse])
+@router.get("/")
 def get_garden_entries_route(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_session)
-) -> List[Garden]:
+):
     """
     Retrieves all garden entries for the current user.
     """
     garden_entries = garden_service.get_garden_entries(current_user.id, db)
-    return garden_entries
+    
+    # Convert to frontend-friendly format
+    response_data = []
+    for entry in garden_entries:
+        response_data.append({
+            "id": entry.id,
+            "mood": entry.mood,
+            "date": entry.created_at.strftime("%Y-%m-%d"),
+            "note": entry.note or "No note saved.",
+            "flower_type": entry.flower_type,
+            "created_at": entry.created_at.isoformat()
+        })
+    
+    # Sort by created_at descending (newest first)
+    response_data.sort(key=lambda x: x["created_at"], reverse=True)
+    
+    return response_data
+
+@router.delete("/{flower_id}")
+def delete_garden_entry_route(
+    flower_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_session)
+):
+    """
+    Deletes a garden entry for the current user.
+    """
+    success = garden_service.delete_garden_entry(flower_id, current_user.id, db)
+    
+    if not success:
+        raise HTTPException(status_code=404, detail="Flower not found")
+    
+    return {"message": "Flower deleted successfully"}

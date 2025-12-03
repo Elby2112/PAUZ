@@ -1,81 +1,188 @@
-# Pauz Backend
+# PAUZ Backend API
 
-This is the Python backend for the Pauz journaling app.
+A clean, professional backend API for the PAUZ journaling application with AI-powered features.
 
-## Features
+## 🏗️ Project Structure
 
-- Google login via OAuth2 with JWT-based authentication
-- Guided Journal: user selects a topic, AI generates 9 prompts about the topic
-- Save user responses in SmartBuckets
-- Export journal as PDF
-- Save PDF to Vultr Object Storage
-- Free Journal with AI-powered hints and reflections
-- Voice-to-text journaling with ElevenLabs (placeholder)
-- Garden feature to track mood and insights
+```
+pauz-backend/
+├── backend/
+│   ├── app/                    # Main application code
+│   │   ├── models/            # Database models
+│   │   ├── routes/            # API endpoints
+│   │   ├── services/          # Business logic
+│   │   └── utils/             # Utility functions
+│   ├── tests/                 # Test suite
+│   ├── scripts/               # Setup and utility scripts
+│   ├── docs/                  # Documentation
+│   ├── config/                # Configuration files
+│   └── *.db                   # Database files
+└── README.md
+```
 
-## Setup
+## 🚀 Features
 
-1.  **Install dependencies:**
+### Journal Management
+- **Free Journal**: Open-ended journaling with AI insights
+- **Guided Journal**: Structured journaling with prompts
+- **Voice Recording**: Speech-to-text transcription (ElevenLabs)
+- **PDF Export**: Beautiful PDF generation of journal entries
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+### AI Integration
+- **Gemini AI**: Free AI-powered hints and mood analysis
+- **Garden System**: Visual mood tracking with flower representations
+- **Smart Reflections**: AI-generated insights from journal content
 
-2.  **Set up environment variables:**
+### Authentication & Storage
+- **OAuth Integration**: Google authentication
+- **Raindrop Storage**: Cloud storage integration
+- **User Management**: Secure user sessions and profiles
 
-    Create a `.env` file in the root directory and add the following variables:
-
-    ```
-    GOOGLE_CLIENT_ID=your_google_client_id
-    GOOGLE_CLIENT_SECRET=your_google_client_secret
-    REDIRECT_URI=http://localhost:8000/auth/callback
-    VULTR_ACCESS_KEY=your_vultr_access_key
-    VULTR_SECRET_KEY=your_vultr_secret_key
-    VULTR_REGION=your_vultr_region
-    VULTR_BUCKET_NAME=your_vultr_bucket_name
-    AI_API_KEY=your_ai_api_key
-    SMARTBUCKET_NAME=your_smartbucket_name
-    FREEJOURNALS_BUCKET_NAME=FreeJournals
-    HINTS_BUCKET_NAME=Hints
-    GARDEN_BUCKET_NAME=Garden
-    ELEVENLABS_API_KEY=your_elevenlabs_api_key
-    JWT_SECRET_KEY=a_very_secret_key # Change this to a strong, random string
-    JWT_ALGORITHM=HS256
-    ```
-
-3.  **Run the application:**
-
-    ```bash
-    uvicorn app.main:app --reload
-    ```
-
-    The application will be running at `http://localhost:8000`.
-
-## API Endpoints
-
-### General
--   `GET /`: Welcome message.
+## 📋 API Endpoints
 
 ### Authentication
--   `GET /auth/login`: Redirects to Google login.
--   `GET /auth/callback`: Handles Google OAuth2 callback and returns a JWT access token.
-
-All other endpoints require authentication. You must include the JWT in the `Authorization` header of your requests: `Authorization: Bearer <your_jwt>`.
-
-### Guided Journal
--   `POST /journal/prompts`: Generates journal prompts for a given topic.
--   `POST /journal/`: Creates a new journal.
--   `GET /journal/{journal_id}`: Retrieves a journal.
--   `POST /journal/{journal_id}/export`: Exports a journal to PDF and uploads it to Vultr.
+- `POST /auth/google` - Google OAuth login
+- `GET /auth/me` - Get current user info
 
 ### Free Journal
--   `POST /freejournal/`: Creates a new free journal session.
--   `POST /freejournal/save`: Saves user content.
--   `POST /freejournal/hints`: Gets hints for writing.
--   `POST /freejournal/voice`: Transcribes voice to text.
--   `POST /freejournal/{sessionId}/reflect`: Reflects on the journal with AI.
--   `POST /freejournal/{sessionId}/export`: Exports the free journal to PDF.
+- `GET /freejournal/` - List user journals
+- `POST /freejournal/` - Create new session
+- `POST /freejournal/{session_id}/save` - Save content
+- `POST /freejournal/{session_id}/voice` - Transcribe audio
+- `POST /freejournal/{session_id}/reflect` - AI reflection
+- `POST /freejournal/{session_id}/export` - Export to PDF
+
+### Guided Journal
+- `GET /guided_journal/` - List guided journals
+- `POST /guided_journal/` - Create guided journal
+- `GET /guided_journal/{id}` - Get specific journal
+- `DELETE /guided_journal/{id}` - Delete journal
 
 ### Garden
--   `POST /garden/save`: Saves a garden entry.
--   `GET /garden/`: Retrieves all garden entries for the authenticated user.
+- `GET /garden/` - Get user garden
+- `POST /garden/` - Create garden entry
+- `DELETE /garden/{entry_id}` - Delete garden entry
+
+### Profile & Stats
+- `GET /profile/stats` - Get user statistics
+- `GET /profile/garden-stats` - Get garden statistics
+
+## 🛠️ Setup
+
+### Prerequisites
+- Python 3.11+
+- PostgreSQL (or SQLite for development)
+- Redis (for caching, optional)
+
+### Installation
+
+1. **Clone and setup environment**
+```bash
+git clone <repository-url>
+cd pauz-backend
+```
+
+2. **Install dependencies**
+```bash
+cd backend
+pip install -r config/requirements.txt
+```
+
+3. **Environment configuration**
+```bash
+cp config/.env.example config/.env
+# Edit config/.env with your API keys and settings
+```
+
+4. **Database setup**
+```bash
+# The app will create the database automatically on first run
+# or you can run migrations manually if needed
+```
+
+5. **Run the application**
+```bash
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+## 🔧 Configuration
+
+### Required Environment Variables
+```env
+# Database
+DATABASE_URL=sqlite:///./database.db
+
+# Authentication
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# AI Services
+GEMINI_API_KEY=your-gemini-api-key
+ELEVENLABS_API_KEY=your-elevenlabs-api-key
+OPENAI_API_KEY=your-openai-api-key  # Optional
+
+# Raindrop Storage
+AI_API_KEY=your-raindrop-api-key
+RAINDROP_ORG=your-organization-name
+APPLICATION_NAME=your-app-name
+```
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+cd backend
+pytest tests/ -v
+```
+
+Run specific test categories:
+```bash
+pytest tests/test_auth.py -v
+pytest tests/test_journals.py -v
+pytest tests/test_garden.py -v
+```
+
+## 📊 Database Schema
+
+### Core Models
+- **User**: User accounts and authentication
+- **FreeJournal**: Open journal entries
+- **GuidedJournal**: Structured journal sessions
+- **Garden**: Mood tracking entries
+- **Hint**: AI-generated writing hints
+
+## 🔍 API Documentation
+
+Once running, visit:
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
+
+## 🚨 Error Handling
+
+The API uses standard HTTP status codes:
+- `200` - Success
+- `400` - Bad Request (validation errors)
+- `401` - Unauthorized (authentication required)
+- `404` - Not Found
+- `500` - Internal Server Error
+
+## 📈 Monitoring & Logs
+
+- Application logs are written to `backend/`
+- Use the scripts in `backend/scripts/` for debugging
+- Check `backend/docs/` for detailed troubleshooting guides
+
+## 🤝 Contributing
+
+1. Follow the existing code structure
+2. Write tests for new features
+3. Update documentation
+4. Use the provided scripts for validation
+
+## 📝 License
+
+[Add your license information here]
+
+---
+
+**Professional Backend API** - Clean, tested, and production-ready.
