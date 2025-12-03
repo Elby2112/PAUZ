@@ -1,4 +1,4 @@
-// FreeJournal.jsx — UPDATED WITH PROPER SAVE FUNCTIONALITY
+// FreeJournal.jsx — FIXED - NO AUTO-CREATION OF EMPTY SESSIONS
 import React, { useState, useEffect } from "react";
 import "../styles/freeJournal.css";
 
@@ -44,9 +44,10 @@ const FreeJournal = () => {
   useEffect(() => {
     const today = new Date();
     setDate(today.toLocaleDateString("en-GB"));
-    createSession();
+    // ⭐ REMOVED: createSession() - no longer creates session on page load
   }, []);
 
+  // ⭐ UPDATED: Create session only when needed
   const createSession = async () => {
     try {
       const res = await fetch(`${API_BASE}/freejournal/`, {
@@ -57,18 +58,15 @@ const FreeJournal = () => {
       const data = await res.json();
       const sid = data.session_id ?? data.id ?? null;
       if (sid) setSessionId(sid);
+      return sid;
     } catch (err) {
       console.error("Session error:", err);
+      return null;
     }
   };
 
-  // ⭐ UPDATED SAVE FUNCTION WITH FEEDBACK
+  // ⭐ UPDATED SAVE FUNCTION - CREATES SESSION ONLY ON FIRST SAVE
   const saveContent = async () => {
-    if (!sessionId) {
-      alert("No session found. Please refresh the page.");
-      return;
-    }
-    
     if (!text.trim()) {
       alert("Please write something before saving!");
       return;
@@ -78,7 +76,17 @@ const FreeJournal = () => {
     setSaveStatus("saving");
     
     try {
-      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/save`, {
+      // Create session only when saving for the first time
+      let currentSessionId = sessionId;
+      if (!currentSessionId) {
+        currentSessionId = await createSession();
+        if (!currentSessionId) {
+          throw new Error("Failed to create session");
+        }
+        setSessionId(currentSessionId);
+      }
+
+      const res = await fetch(`${API_BASE}/freejournal/${currentSessionId}/save`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ content: text }),
@@ -165,14 +173,24 @@ const FreeJournal = () => {
     setShowExportConfirm(true);
   };
 
+  // ⭐ UPDATED: Create session only when requesting hints
   const requestHint = async () => {
-    if (!sessionId) return;
+    // Create session if needed
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      currentSessionId = await createSession();
+      if (!currentSessionId) {
+        alert("Failed to create session. Please try again.");
+        return;
+      }
+      setSessionId(currentSessionId);
+    }
 
     setHintLoading(true);
     setHint(null);
 
     try {
-      const res = await fetch(`${API_BASE}/freejournal/${sessionId}/hints`, {
+      const res = await fetch(`${API_BASE}/freejournal/${currentSessionId}/hints`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ current_content: text || "" }),
@@ -196,9 +214,9 @@ const FreeJournal = () => {
     requestHint();
   };
 
-  // ⭐ WORKING AI REFLECTION FUNCTION (from your version)
+  // ⭐ WORKING AI REFLECTION FUNCTION
   const openAIReflection = async () => {
-    if (!sessionId || !text.trim()) {
+    if (!text.trim()) {
       alert("Please write something in your journal first!");
       return;
     }
@@ -208,7 +226,13 @@ const FreeJournal = () => {
     setAiReflection(null);
     
     try {
+      // Save content first (this creates session if needed)
       await saveContent();
+      
+      // Now we have a sessionId
+      if (!sessionId) {
+        throw new Error("No session created after save");
+      }
       
       const res = await fetch(`${API_BASE}/freejournal/${sessionId}/reflect`, {
         method: "POST",
@@ -250,6 +274,7 @@ const FreeJournal = () => {
     };
     return emojiMap[mood] || "📝";
   };
+
 /*voice feature*/
 // Add these new state variables
 const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -294,9 +319,15 @@ const stopRecording = () => {
 
 // Add this function to send audio to backend
 const sendAudioToBackend = async (audioBlob) => {
-  if (!sessionId) {
-    alert('No session found. Please refresh the page.');
-    return;
+  // Create session if needed for voice recording
+  let currentSessionId = sessionId;
+  if (!currentSessionId) {
+    currentSessionId = await createSession();
+    if (!currentSessionId) {
+      alert('No session found. Please refresh the page.');
+      return;
+    }
+    setSessionId(currentSessionId);
   }
 
   setLoading(true);
@@ -306,7 +337,7 @@ const sendAudioToBackend = async (audioBlob) => {
     formData.append('audio_file', audioBlob, 'recording.wav');
     
     const token = localStorage.getItem('pauz_token');
-    const response = await fetch(`${API_BASE}/freejournal/${sessionId}/voice`, {
+    const response = await fetch(`${API_BASE}/freejournal/${currentSessionId}/voice`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -349,6 +380,7 @@ const handleVoiceModeClick = async () => {
     await startRecording();
   }
 };
+
   return (
     <div className="freejournal-container">
       {/* TOOLBAR */}

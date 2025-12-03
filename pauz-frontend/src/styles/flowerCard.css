@@ -26,7 +26,20 @@
   animation: growUp 520ms cubic-bezier(.2,.85,.25,1) forwards;
   animation-delay: var(--delay, 0s);
 }
-.flower-card:focus { outline: none; box-shadow: 0 10px 26px rgba(94,143,168,0.12); }
+
+.flower-card:focus { 
+  outline: none; 
+  box-shadow: 0 10px 26px rgba(94,143,168,0.12);
+}
+
+.flower-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(46,46,53,0.15);
+}
+
+.flower-card:active {
+  transform: translateY(-2px) scale(1.01);
+}
 
 @keyframes growUp {
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -155,8 +168,35 @@
   from { transform: translateX(-50%) translateY(6px) scale(0.96); opacity: 0; }
   to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
 }
-.note-text { margin-bottom: 6px; color: rgba(46,46,53,0.9); }
-.note-hint { font-size: 11px; color: rgba(46,46,53,0.45); }
+.note-text { 
+  margin-bottom: 6px; 
+  color: rgba(46,46,53,0.9);
+  line-height: 1.4;
+}
+.note-text strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 14px;
+}
+.note-text p {
+  margin: 0;
+  font-weight: normal;
+}
+.flower-type {
+  display: block;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(46,46,53,0.1);
+  font-style: italic;
+  opacity: 0.7;
+}
+.note-hint { 
+  font-size: 11px; 
+  color: rgba(46,46,53,0.45); 
+  margin-top: 8px;
+  text-align: center;
+}
 
 /* responsive */
 @media (max-width: 520px) {

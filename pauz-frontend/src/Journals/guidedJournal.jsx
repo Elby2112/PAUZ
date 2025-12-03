@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../styles/guidedJournal.css";
 
 import quillIcon from "../assets/icons/quill-pen-2.png";
 import micIcon from "../assets/icons/microphone.png";
 import diskIcon from "../assets/icons/download.png";
 import editIcon from "../assets/icons/selection.png";
+import saveIcon from "../assets/icons/save.png";
 
 const PLACEHOLDER_PROMPTS = [
   "How do you feel today?",
@@ -16,31 +17,43 @@ const PLACEHOLDER_PROMPTS = [
   "Set one goal for tomorrow."
 ];
 
+const API_BASE = "http://localhost:8000";
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("pauz_token");
+  if (!token) return null;
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
 const GuidedJournaling = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState(Array(6).fill(""));
   const [prompts, setPrompts] = useState(PLACEHOLDER_PROMPTS);
   const [loading, setLoading] = useState(false);
   const [showTopicSelector, setShowTopicSelector] = useState(false);
   const [mode, setMode] = useState("write");
   const [recording, setRecording] = useState(false);
+  const [saveStatus, setSaveStatus] = useState({ type: "", message: "" });
+  const [currentJournalId, setCurrentJournalId] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const fetchPrompts = async (topic) => {
-    const token = localStorage.getItem("pauz_token");
-    if (!token) {
-      console.warn("No token found. Using placeholder prompts for testing.");
+    const headers = getAuthHeaders();
+    if (!headers) {
       setPrompts(PLACEHOLDER_PROMPTS);
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/guided_journal/prompts", {
+      const res = await fetch(`${API_BASE}/guided_journal/prompts`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify({ topic }),
       });
 
@@ -49,22 +62,16 @@ const GuidedJournaling = () => {
       }
 
       const data = await res.json();
-      console.log("Raw prompts data:", data); // Debugging line
-
-      // Extract just the text from each prompt object
       const mappedPrompts = data.map((p) => {
-        if (typeof p === "string") {
-          return p; // If it's already a string, use it as is
-        } else if (p.text) {
-          return p.text; // Use the text property from the object
-        } else if (p.question) {
-          return p.question; // Fallback to question property
-        } else {
-          return JSON.stringify(p); // Last resort: stringify the whole object
-        }
+        if (typeof p === "string") return p;
+        if (p.text) return p.text;
+        if (p.question) return p.question;
+        return JSON.stringify(p);
       });
       
       setPrompts(mappedPrompts);
+      setAnswers(Array(mappedPrompts.length).fill(""));
+      setCurrentJournalId(null);
 
     } catch (err) {
       console.error("Error fetching prompts:", err);
@@ -75,12 +82,8 @@ const GuidedJournaling = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("pauz_token");
-    if (!token) {
-      console.warn("No token found. Using placeholder prompts.");
-      setPrompts(PLACEHOLDER_PROMPTS);
-      return;
-    }
+    const headers = getAuthHeaders();
+    if (!headers) return;
 
     const topic = category || "Random Prompt Flow";
     fetchPrompts(topic);
@@ -99,15 +102,166 @@ const GuidedJournaling = () => {
     fetchPrompts(topic);
   };
 
+  // ✅ FIXED SAVE FUNCTION - Ensures proper data structure
+  const saveJournal = async () => {
+    const headers = getAuthHeaders();
+    if (!headers) {
+      setSaveStatus({
+        type: "error",
+        message: "Please log in to save your journal."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+      navigate("/login");
+      return;
+    }
+
+    const hasContent = answers.some(answer => answer.trim().length > 0);
+    if (!hasContent) {
+      setSaveStatus({
+        type: "warning",
+        message: "Please write at least one response before saving."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveStatus({ type: "info", message: "Saving your journal..." });
+
+    try {
+      // Create journal with the exact structure the backend expects
+      const journalData = {
+        topic: category || "Random Prompt Flow",
+        prompts: prompts.map((text, index) => ({
+          id: index + 1,
+          text: text
+        })),
+        entries: answers
+          .map((answer, index) => {
+            if (!answer.trim()) return null;
+            return {
+              prompt_id: index + 1,
+              prompt_text: prompts[index],
+              response: answer.trim(),
+              created_at: new Date().toISOString()
+            };
+          })
+          .filter(entry => entry !== null) // Remove empty entries
+      };
+
+      const response = await fetch(`${API_BASE}/guided_journal/`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(journalData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save journal: ${response.status} - ${errorText}`);
+      }
+
+      const journal = await response.json();
+      setCurrentJournalId(journal.id);
+      
+      setSaveStatus({
+        type: "success",
+        message: "Journal saved successfully!"
+      });
+      
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+
+    } catch (err) {
+      console.error("Error saving journal:", err);
+      setSaveStatus({
+        type: "error",
+        message: "Failed to save journal. Please try again."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // ✅ FIXED EXPORT FUNCTION
+  const exportToPDF = async () => {
+    const headers = getAuthHeaders();
+    if (!headers) {
+      setSaveStatus({
+        type: "error",
+        message: "Please log in to export your journal."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+      navigate("/login");
+      return;
+    }
+
+    if (!currentJournalId) {
+      setSaveStatus({
+        type: "warning",
+        message: "Please save your journal before exporting."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+      return;
+    }
+
+    setIsExporting(true);
+    setSaveStatus({ type: "info", message: "Generating PDF..." });
+
+    try {
+      const response = await fetch(`${API_BASE}/guided_journal/${currentJournalId}/export`, {
+        method: "POST",
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to export PDF: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = data.pdf_url;
+      link.download = `journal-${new Date().toISOString().split('T')[0]}.pdf`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setSaveStatus({
+        type: "success",
+        message: "PDF downloaded successfully!"
+      });
+      
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+
+    } catch (err) {
+      console.error("Error exporting to PDF:", err);
+      setSaveStatus({
+        type: "error",
+        message: "Failed to generate PDF. Please try again."
+      });
+      setTimeout(() => setSaveStatus({ type: "", message: "" }), 3000);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return ( 
     <div className="guided-page">
-      {/* TOOLBAR */} 
+      {saveStatus.message && (
+        <div className={`save-status save-status-${saveStatus.type}`}>
+          {saveStatus.message}
+        </div>
+      )}
+
       <div className="gj-toolbar-wrapper"> 
         <div className="gj-toolbar">
           <button
             className={`gj-icon-btn ${mode === "write" ? "active" : ""}`}
             onClick={() => setMode("write")}
             title="Write your thoughts"
+            disabled={isSaving || isExporting}
           >
             <img src={quillIcon} alt="Write" className={mode === "write" ? "active-icon" : ""} /> 
           </button>
@@ -116,18 +270,34 @@ const GuidedJournaling = () => {
             className={`gj-icon-btn ${mode === "voice" ? "active" : ""}`}
             onClick={() => { setMode("voice"); setRecording(true); }}
             title="Record your voice"
+            disabled={isSaving || isExporting}
           >
             <img src={micIcon} alt="Record" className={mode === "voice" ? "active-icon" : ""} />
           </button>
+          
+          <button 
+            className={`gj-icon-btn save-btn ${isSaving ? "loading" : ""}`}
+            onClick={saveJournal}
+            title="Save Journal Entry"
+            disabled={isSaving || isExporting}
+          >
+            <img src={saveIcon} alt="Save" />
+          </button>
 
-          <button className="gj-icon-btn save-btn" title="Save Entry">
-            <img src={diskIcon} alt="Save" />
+          <button 
+            className={`gj-icon-btn ${isExporting ? "loading" : ""}`}
+            onClick={exportToPDF}
+            title="Export to PDF"
+            disabled={isExporting || isSaving || !currentJournalId}
+          >
+            <img src={diskIcon} alt="Export PDF" />
           </button>
 
           <button
             className="gj-icon-btn change-topic-btn"
             onClick={openTopicSelector}
             title="Change Topic"
+            disabled={isSaving || isExporting}
           >
             <img src={editIcon} alt="Change Topic" className="fj-ai-icon" />
             Change Topic
@@ -135,7 +305,6 @@ const GuidedJournaling = () => {
         </div>
       </div>
 
-      {/* MAIN JOURNAL AREA */}
       <div className="guided-journal">
         <div className="guided-date">{new Date().toLocaleDateString()}</div>
 
@@ -151,6 +320,7 @@ const GuidedJournaling = () => {
                   value={answers[i]}
                   onChange={(e) => handleAnswerChange(i, e.target.value)}
                   placeholder="Write your reflection here..."
+                  disabled={isSaving || isExporting}
                 />
               </div>
             ))
@@ -158,7 +328,6 @@ const GuidedJournaling = () => {
         </div>
       </div>
 
-      {/* TOPIC SELECTOR MODAL */}
       {showTopicSelector && (
         <div className="guided-modal-overlay" onClick={() => setShowTopicSelector(false)}>
           <div className="guided-modal" onClick={(e) => e.stopPropagation()}>
@@ -176,10 +345,23 @@ const GuidedJournaling = () => {
                 "🎨 Creativity",
                 "✨ Random Prompt Flow"
               ].map((t) => (
-                <button key={t} className="topic-item" onClick={() => selectTopic(t)}>{t}</button>
+                <button 
+                  key={t} 
+                  className="topic-item" 
+                  onClick={() => selectTopic(t)}
+                  disabled={isSaving || isExporting}
+                >
+                  {t}
+                </button>
               ))}
             </div>
-            <button className="guided-close" onClick={() => setShowTopicSelector(false)}>Close</button>
+            <button 
+              className="guided-close" 
+              onClick={() => setShowTopicSelector(false)}
+              disabled={isSaving || isExporting}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
