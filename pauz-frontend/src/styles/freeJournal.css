@@ -1077,3 +1077,109 @@ button.recording-active {
   background: #ff4444 !important;
   color: white !important;
 }
+
+/* ===================== SAVE LOADING OVERLAY ===================== */
+.fj-saving-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 244, 234, 0.8);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.fj-saving-box {
+  background: #ffffff;
+  padding: 25px 35px;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: popIn 0.25s ease-out;
+}
+
+.fj-saving-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2e2e35;
+  margin-top: 10px;
+}
+
+.fj-saving-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.fj-saving-dots span {
+  width: 8px;
+  height: 8px;
+  background: #8c6e94;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.fj-saving-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.fj-saving-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Magic wand */
+.fj-saving-wand {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 10px;
+  animation: tiltWand 0.8s ease-in-out infinite alternate;
+}
+
+.fj-saving-wand-stick {
+  position: absolute;
+  width: 4px;
+  height: 32px;
+  background: #2e2e35;
+  border-radius: 3px;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+}
+
+.fj-saving-wand-star {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  animation: sparkle 1s infinite ease-in-out;
+}
+
+/* Animations */
+@keyframes bounce {
+  to { transform: translateY(-6px); }
+}
+
+@keyframes tiltWand {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(6deg); }
+}
+
+@keyframes sparkle {
+  0% { opacity: 0.7; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.7; transform: scale(0.9); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } 
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

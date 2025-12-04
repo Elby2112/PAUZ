@@ -14,7 +14,10 @@ import gardenIcon from "../../assets/icons/garden.png";
 import videoIcon from "../../assets/icons/youtube.png";
 import githubIcon from "../../assets/icons/github.png";
 
+import journalIcon from "../../assets/icons/journals.png";
 import "../../styles/navbar.css";
+import CategoryModal from "../CategoryModal";  // ⭐ ADDED
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,35 +26,28 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const [showCategoryModal, setShowCategoryModal] = useState(false); // ⭐ ADDED
+
   const containerRef = useRef(null);
   const location = useLocation();
 
-  // Load user from localStorage on component mount and route changes
+  // Load user from localStorage
   useEffect(() => {
     loadUserFromStorage();
-  }, [location.pathname]); // Reload when route changes
+  }, [location.pathname]);
 
-  // Preload profile picture when user data changes
   useEffect(() => {
     if (user?.picture) {
-      console.log("🖼️ Preloading profile picture:", user.picture);
       setImageLoaded(false);
       const img = new Image();
       img.src = user.picture;
-      img.onload = () => {
-        console.log("✅ Profile picture loaded successfully");
-        setImageLoaded(true);
-      };
-      img.onerror = () => {
-        console.log("❌ Failed to load profile picture");
-        setImageLoaded(true);
-      };
+      img.onload = () => setImageLoaded(true);
+      img.onerror = () => setImageLoaded(true);
     } else {
       setImageLoaded(true);
     }
   }, [user?.picture]);
 
-  // Load user data from localStorage
   const loadUserFromStorage = () => {
     const token = localStorage.getItem("pauz_token");
     const userData = localStorage.getItem("pauz_user");
@@ -59,8 +55,7 @@ const Navbar = () => {
     if (token && userData) {
       try {
         setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error("Error parsing user data:", error);
+      } catch {
         setUser(null);
       }
     } else {
@@ -68,21 +63,13 @@ const Navbar = () => {
     }
   };
 
-  // Listen for storage updates (from GoogleCallback) AND custom events
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      console.log("Storage updated, reloading user data");
-      loadUserFromStorage();
-    };
+    const handleStorageUpdate = () => loadUserFromStorage();
 
-    // Listen to all possible events
     window.addEventListener("storage", handleStorageUpdate);
     window.addEventListener("localStorageUpdate", handleStorageUpdate);
-    
-    // Add this for Safari
-    const interval = setInterval(() => {
-      loadUserFromStorage();
-    }, 1000); // Check every second as backup
+
+    const interval = setInterval(loadUserFromStorage, 1000);
 
     return () => {
       window.removeEventListener("storage", handleStorageUpdate);
@@ -91,13 +78,11 @@ const Navbar = () => {
     };
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
     setProfileOpen(false);
   }, [location.pathname]);
 
-  // Close menus on scroll/click/Esc
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     const onDocClick = (e) => {
@@ -119,20 +104,17 @@ const Navbar = () => {
     };
   }, []);
 
-  // Google login
   const handleGoogleSignIn = () => {
     window.location.href = "http://localhost:8000/auth/login";
   };
 
-  // Logout
   const handleSignOut = () => {
     localStorage.removeItem("pauz_token");
     localStorage.removeItem("pauz_user");
     setUser(null);
     setImageLoaded(false);
     setProfileOpen(false);
-    
-    // Dispatch event to notify other components
+
     window.dispatchEvent(new Event("localStorageUpdate"));
     window.dispatchEvent(new Event("storage"));
   };
@@ -140,74 +122,108 @@ const Navbar = () => {
   const loggedIn = !!user;
 
   return (
-    <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`} ref={containerRef}>
-      <div className="navbar-container">
+    <>
+      <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`} ref={containerRef}>
+        <div className="navbar-container">
 
-        {/* LEFT */}
-        <div className="navbar-left">
-          <button className="navbar-hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>
+          {/* LEFT */}
+          <div className="navbar-left">
+            <button className="navbar-hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>
 
-          {menuOpen && (
-            <div className="enhanced-dropdown left-dropdown">
-              <Link to="/" className="dropdown-item"><img src={homeIcon} /> Home</Link>
-              <Link to="/journal" className="dropdown-item"><img src={freeJournalIcon} /> Free Journal</Link>
-              <Link to="/guided/journal" className="dropdown-item"><img src={guidedJournalIcon} /> Guided Journal</Link>
-              {/* ⭐ ADDED MY JOURNALS LINK - BEFORE MY GARDEN */}
-              <Link to="/saved-journals" className="dropdown-item">📓 My Journals</Link>
-              <Link to="/garden" className="dropdown-item"><img src={gardenIcon} /> My Garden</Link>
-              <a href="https://youtu.be/..." target="_blank" className="dropdown-item"><img src={videoIcon} /> Introduction Video</a>
-              <a href="https://github.com/..." target="_blank" className="dropdown-item"><img src={githubIcon} /> GitHub</a>
-            </div>
-          )}
-        </div>
+            {menuOpen && (
+              <div className="enhanced-dropdown left-dropdown">
+                <Link to="/" className="dropdown-item"><img src={homeIcon} /> Home</Link>
 
-        {/* LOGO */}
-        <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
-          <img src={logo} alt="Pauz" />
-        </Link>
+                <Link to="/journal" className="dropdown-item">
+                  <img src={freeJournalIcon} /> Free Journal
+                </Link>
 
-        {/* RIGHT PROFILE */}
-        <div className="navbar-profile">
-          <button className="profile-button" onClick={() => setProfileOpen(v => !v)}>
-            <img
-              src={user?.picture || profileIcon}
-              alt="Profile"
-              className="profile-icon"
-              crossOrigin="anonymous"
-              onLoad={() => setImageLoaded(true)}
-              onError={(e) => {
-                console.log("Image failed, using fallback");
-                e.target.src = profileIcon;
-                setImageLoaded(true);
-              }}
-              style={{ 
-                opacity: imageLoaded ? 1 : 0.7,
-                transition: 'opacity 0.3s ease-in-out'
-              }}
-            />
-          </button>
-
-          {profileOpen && (
-            <div className="enhanced-dropdown profile-pos">
-              {!loggedIn ? (
-                <button className="profile-option" onClick={handleGoogleSignIn}>
-                  <img src={loginIcon} /> Sign in with Google
+                {/* ⭐ REPLACED WITH BUTTON TO OPEN CATEGORY MODAL */}
+                <button
+                  className="dropdown-item"
+                  onClick={() => setShowCategoryModal(true)}
+                >
+                  <img src={guidedJournalIcon} /> Guided Journal
                 </button>
-              ) : (
-                <>
-                  <Link className="profile-option" to="/profile" onClick={() => setProfileOpen(false)}>
-                    <img src={userIcon} /> Profile
-                  </Link>
-                  <button className="profile-option" onClick={handleSignOut}>
-                    <img src={logoutIcon} /> Log Out
+
+                <Link to="/saved-journals" className="dropdown-item">
+                <img src={journalIcon} />
+                 My Journals</Link>
+
+                <Link to="/garden" className="dropdown-item"><img src={gardenIcon} /> My Garden</Link>
+
+                <a href="https://youtu.be/..." target="_blank" className="dropdown-item">
+                  <img src={videoIcon} /> Introduction Video
+                </a>
+
+                <a href="https://github.com/..." target="_blank" className="dropdown-item">
+                  <img src={githubIcon} /> GitHub
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* LOGO */}
+          <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
+            <img src={logo} alt="Pauz" />
+          </Link>
+
+          {/* RIGHT PROFILE */}
+          <div className="navbar-profile">
+            <button className="profile-button" onClick={() => setProfileOpen(v => !v)}>
+              <img
+                src={user?.picture || profileIcon}
+                className="profile-icon"
+                alt="Profile"
+                crossOrigin="anonymous"
+                onLoad={() => setImageLoaded(true)}
+                onError={(e) => {
+                  e.target.src = profileIcon;
+                  setImageLoaded(true);
+                }}
+                style={{
+                  opacity: imageLoaded ? 1 : 0.7,
+                  transition: "opacity 0.3s ease-in-out"
+                }}
+              />
+            </button>
+
+            {profileOpen && (
+              <div className="enhanced-dropdown profile-pos">
+                {!loggedIn ? (
+                  <button className="profile-option" onClick={handleGoogleSignIn}>
+                    <img src={loginIcon} /> Sign in with Google
                   </button>
-                </>
-              )}
-            </div>
-          )}
+                ) : (
+                  <>
+                    <Link className="profile-option" to="/profile" onClick={() => setProfileOpen(false)}>
+                      <img src={userIcon} /> Profile
+                    </Link>
+
+                    <button className="profile-option" onClick={handleSignOut}>
+                      <img src={logoutIcon} /> Log Out
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* ⭐ CATEGORY MODAL */}
+      {showCategoryModal && (
+        <CategoryModal
+  isOpen={showCategoryModal}
+  onClose={() => setShowCategoryModal(false)}
+  onSelect={(category) => {
+    setShowCategoryModal(false);
+    window.location.href = `/guided/${category}`;
+  }}
+/>
+
+      )}
+    </>
   );
 };
 

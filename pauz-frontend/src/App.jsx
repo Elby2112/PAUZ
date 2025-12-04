@@ -13,6 +13,9 @@ import SavedJournals from "./pages/SavedJournals"; // ⭐ ADD THIS IMPORT
 import Profile from "./pages/authentication/Profile";
 import GoogleCallback from "./pages/authentication/GoogleCallback";
 
+// ⭐ Floating Help Button component
+import FloatingHelpButton from "./utils/FloatingHelpButton"; // create this component as discussed
+
 // Wrapper to hide Navbar/Footer on auth routes
 function LayoutWrapper({ children }) {
   const location = useLocation();
@@ -24,6 +27,7 @@ function LayoutWrapper({ children }) {
       {!hideLayout && <Navbar />}
       {children}
       {!hideLayout && <Footer />}
+      {!hideLayout && <FloatingHelpButton />} {/* ⭐ Floating button added */}
     </>
   );
 }

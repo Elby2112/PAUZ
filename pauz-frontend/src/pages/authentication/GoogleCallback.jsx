@@ -41,10 +41,38 @@ function GoogleCallback() {
           localStorage.setItem("pauz_token", token);
           localStorage.setItem("pauz_user", JSON.stringify({
             email: email,
-            name: name || "User"
+            name: name || "User",
+            picture: null // Will be updated when we fetch from /auth/me
           }));
           
           console.log("✅ User data saved:", email);
+
+          // Fetch complete user data including picture
+          try {
+            const userResponse = await fetch("http://localhost:8000/auth/me", {
+              headers: {
+                "Authorization": `Bearer ${token}`,
+              },
+            });
+
+            if (userResponse.ok) {
+              const userData = await userResponse.json();
+              console.log("🖼️ Complete user data received:", userData);
+              
+              // Update localStorage with complete user data including picture
+              localStorage.setItem("pauz_user", JSON.stringify({
+                email: userData.email,
+                name: userData.name,
+                picture: userData.picture // ✅ INCLUDE THE PICTURE!
+              }));
+              
+              console.log("✅ Complete user data saved with picture:", userData.picture ? "YES" : "NO");
+            } else {
+              console.warn("⚠️ Could not fetch complete user info");
+            }
+          } catch (userError) {
+            console.warn("⚠️ Error fetching complete user info:", userError);
+          }
 
           // Navigate to homepage or guided journaling
           if (isSafari) {
@@ -108,7 +136,7 @@ function GoogleCallback() {
           // Store token
           localStorage.setItem("pauz_token", data.access_token);
           
-          // Fetch user info
+          // Fetch complete user info including picture
           try {
             const userResponse = await fetch("http://localhost:8000/auth/me", {
               headers: {
@@ -118,16 +146,33 @@ function GoogleCallback() {
 
             if (userResponse.ok) {
               const userData = await userResponse.json();
+              console.log("🖼️ Complete user data received:", userData);
+              
+              // ✅ SAVE COMPLETE USER DATA INCLUDING PICTURE
               localStorage.setItem("pauz_user", JSON.stringify({
                 email: userData.email,
-                name: userData.name
+                name: userData.name,
+                picture: userData.picture // ✅ THIS IS THE FIX!
               }));
-              console.log("✅ User data saved:", userData.email);
+              
+              console.log("✅ User data saved with picture:", userData.picture ? "YES" : "NO");
             } else {
-              console.warn("⚠️  Could not fetch user info, but login was successful");
+              console.warn("⚠️ Could not fetch user info, but login was successful");
+              // Fallback - save basic data
+              localStorage.setItem("pauz_user", JSON.stringify({
+                email: email,
+                name: name || "User",
+                picture: null
+              }));
             }
           } catch (userError) {
-            console.warn("⚠️  Error fetching user info:", userError);
+            console.warn("⚠️ Error fetching user info:", userError);
+            // Fallback - save basic data
+            localStorage.setItem("pauz_user", JSON.stringify({
+              email: email,
+              name: name || "User",
+              picture: null
+            }));
           }
 
           // Navigate to homepage or guided journaling

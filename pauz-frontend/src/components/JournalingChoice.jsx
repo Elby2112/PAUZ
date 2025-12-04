@@ -17,15 +17,16 @@ const JournalingChoice = () => {
   ];
 
   const categories = [
-    { id: "personal_growth", title: "Personal Growth" },
-    { id: "gratitude", title: "Gratitude" },
-    { id: "health", title: "Health & Wellness" },
-    { id: "career", title: "Career & Professional" },
-    { id: "creativity", title: "Creativity" },
-    { id: "relationships", title: "Relationships" },
-    { id: "goals", title: "Goals & Aspirations" },
-    { id: "adventure", title: "Adventure & Travel" },
-    { id: "mindfulness", title: "Mindfulness & Meditation" },
+     { id: "mind", title: "Mind" },
+    { id: "body", title: "Body" },
+    { id: "heart", title: "Heart" },
+    { id: "family", title: "Family" },
+    { id: "friends", title: "Friends" },
+    { id: "romance", title: "Romance" },
+    { id: "growth", title: "Growth" },
+    { id: "money", title: "Money" },
+    { id: "mission", title: "Mission" },
+    { id: "joy", title: "Joy" },
   ];
 
   const handleSelect = (id) => setSelected(id);

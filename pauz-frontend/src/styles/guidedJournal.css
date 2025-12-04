@@ -311,3 +311,22 @@
   filter: none; /* Remove the filter for the edit icon */
   color: inherit; /* Ensures the color isn't overridden */
 }
+
+.save-status {
+  width: 100%;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+.save-status-info    { background: #e5f1f7; color: #2e2e35; }
+.save-status-success { background: #e8f7e8; color: #2e2e35; }
+.save-status-error   { background: #fdecec; color: #2e2e35; }
+.save-status-warning { background: #fff3e5; color: #2e2e35; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

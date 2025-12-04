@@ -7,6 +7,7 @@ import micIcon from "../assets/icons/microphone.png";
 import diskIcon from "../assets/icons/download.png";
 import editIcon from "../assets/icons/selection.png";
 import saveIcon from "../assets/icons/save.png";
+import CategoryModal from "../components/CategoryModal";
 
 const PLACEHOLDER_PROMPTS = [
   "How do you feel today?",
@@ -95,14 +96,6 @@ const GuidedJournaling = () => {
     setAnswers(updated);
   };
 
-  const openTopicSelector = () => setShowTopicSelector(true);
-
-  const selectTopic = (topic) => {
-    setShowTopicSelector(false);
-    fetchPrompts(topic);
-  };
-
-  // ✅ FIXED SAVE FUNCTION - Ensures proper data structure
   const saveJournal = async () => {
     const headers = getAuthHeaders();
     if (!headers) {
@@ -129,7 +122,6 @@ const GuidedJournaling = () => {
     setSaveStatus({ type: "info", message: "Saving your journal..." });
 
     try {
-      // Create journal with the exact structure the backend expects
       const journalData = {
         topic: category || "Random Prompt Flow",
         prompts: prompts.map((text, index) => ({
@@ -146,7 +138,7 @@ const GuidedJournaling = () => {
               created_at: new Date().toISOString()
             };
           })
-          .filter(entry => entry !== null) // Remove empty entries
+          .filter(entry => entry !== null)
       };
 
       const response = await fetch(`${API_BASE}/guided_journal/`, {
@@ -182,7 +174,7 @@ const GuidedJournaling = () => {
     }
   };
 
-  // ✅ FIXED EXPORT FUNCTION
+
   const exportToPDF = async () => {
     const headers = getAuthHeaders();
     if (!headers) {
@@ -219,7 +211,6 @@ const GuidedJournaling = () => {
 
       const data = await response.json();
       
-      // Create download link
       const link = document.createElement('a');
       link.href = data.pdf_url;
       link.download = `journal-${new Date().toISOString().split('T')[0]}.pdf`;
@@ -263,7 +254,7 @@ const GuidedJournaling = () => {
             title="Write your thoughts"
             disabled={isSaving || isExporting}
           >
-            <img src={quillIcon} alt="Write" className={mode === "write" ? "active-icon" : ""} /> 
+            <img src={quillIcon} alt="Write" />
           </button>
 
           <button
@@ -272,7 +263,7 @@ const GuidedJournaling = () => {
             title="Record your voice"
             disabled={isSaving || isExporting}
           >
-            <img src={micIcon} alt="Record" className={mode === "voice" ? "active-icon" : ""} />
+            <img src={micIcon} alt="Record" />
           </button>
           
           <button 
@@ -295,11 +286,11 @@ const GuidedJournaling = () => {
 
           <button
             className="gj-icon-btn change-topic-btn"
-            onClick={openTopicSelector}
+            onClick={() => setShowTopicSelector(true)}
             title="Change Topic"
             disabled={isSaving || isExporting}
           >
-            <img src={editIcon} alt="Change Topic" className="fj-ai-icon" />
+            <img src={editIcon} alt="Change Topic" />
             Change Topic
           </button>
         </div>
@@ -310,7 +301,12 @@ const GuidedJournaling = () => {
 
         <div className="journal-paper">
           {loading ? (
-            <div className="loading-text">Loading prompts...</div>
+          <div className="quill-loader">
+  <p>Generating meaningful prompts…</p>
+</div>
+
+
+            
           ) : (
             prompts.map((q, i) => (
               <div key={i} className="journal-entry">
@@ -328,43 +324,15 @@ const GuidedJournaling = () => {
         </div>
       </div>
 
-      {showTopicSelector && (
-        <div className="guided-modal-overlay" onClick={() => setShowTopicSelector(false)}>
-          <div className="guided-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Select a New Topic</h3>
-            <div className="topic-list">
-              {[
-                "❤️ Emotions & Mental Wellbeing",
-                "🌤️ Self-Reflection",
-                "👤 Self-Esteem & Identity",
-                "🎯 Goals & Productivity",
-                "💼 Career & Purpose",
-                "💸 Money & Decision-Making",
-                "💬 Relationships",
-                "🌱 Growth Mindset",
-                "🎨 Creativity",
-                "✨ Random Prompt Flow"
-              ].map((t) => (
-                <button 
-                  key={t} 
-                  className="topic-item" 
-                  onClick={() => selectTopic(t)}
-                  disabled={isSaving || isExporting}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-            <button 
-              className="guided-close" 
-              onClick={() => setShowTopicSelector(false)}
-              disabled={isSaving || isExporting}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* ⭐ NEW CATEGORY MODAL */}
+      <CategoryModal
+        isOpen={showTopicSelector}
+        onClose={() => setShowTopicSelector(false)}
+        onSelect={(cat) => {
+          setShowTopicSelector(false);
+          navigate(`/guided/${cat}`);
+        }}
+      />
     </div>
   );
 };
