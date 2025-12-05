@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Hints Audio Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Voice Hints Audio Test</h1>
+    
+    <div class="status info">
+        This page tests if your voice hints feature is working correctly.
+    </div>
+
+    <button class="test-button" onclick="testVoiceHint()">Test Voice Hint Generation</button>
+    <button class="test-button" onclick="testCustomText()">Test Custom Text</button>
+    
+    <div id="status"></div>
+    <div id="audio-container"></div>
+
+    <script>
+        const API_BASE = "http://localhost:8000";
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function playAudio(audioData, contentType) {
+            const container = document.getElementById('audio-container');
+            container.innerHTML = '';
+            
+            const audio = new Audio(`data:${contentType};base64,${audioData}`);
+            audio.controls = true;
+            audio.style.width = '100%';
+            audio.style.marginTop = '10px';
+            
+            container.appendChild(audio);
+            audio.play().catch(error => {
+                updateStatus(`Audio autoplay failed: ${error.message}. Click play button to listen.`, 'error');
+            });
+            
+            updateStatus('✅ Audio generated successfully! Playing now...', 'success');
+        }
+
+        async function testVoiceHint() {
+            updateStatus('🔄 Testing voice hint generation...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/freejournal/text-to-voice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: "Take a deep breath and notice how your body feels right now. What sensations are present?",
+                        voice_profile: "hints"
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        playAudio(result.audio_data, result.content_type);
+                    } else {
+                        updateStatus(`❌ Voice generation failed: ${result.error || 'Unknown error'}`, 'error');
+                    }
+                } else {
+                    const error = await response.json();
+                    updateStatus(`❌ API Error (${response.status}): ${error.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                updateStatus(`❌ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCustomText() {
+            const text = prompt("Enter text to convert to speech:", "Hello! This is a test of the voice system.");
+            if (!text) return;
+            
+            updateStatus('🔄 Converting your text to speech...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/freejournal/text-to-voice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_profile: "hints"
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        playAudio(result.audio_data, result.content_type);
+                    } else {
+                        updateStatus(`❌ Voice generation failed: ${result.error || 'Unknown error'}`, 'error');
+                    }
+                } else {
+                    const error = await response.json();
+                    updateStatus(`❌ API Error (${response.status}): ${error.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                updateStatus(`❌ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            updateStatus('🚀 Ready to test! Click the buttons above to test voice generation.', 'info');
+        };
+    </script>
+</body>
+</html>

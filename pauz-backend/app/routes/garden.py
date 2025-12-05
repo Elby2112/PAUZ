@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from app.services.garden_service import garden_service
+from app.services.stats_service import stats_service
 from app.models import Garden, User
 from pydantic import BaseModel
 from typing import List, Optional
@@ -50,6 +51,10 @@ def create_garden_entry_route(
         flower_type=garden_create.flower_type,
         db=db
     )
+    
+    # Invalidate stats cache for this user
+    stats_service.invalidate_user_cache(current_user.id)
+    
     return garden_entry
 
 @router.get("/")
@@ -92,5 +97,8 @@ def delete_garden_entry_route(
     
     if not success:
         raise HTTPException(status_code=404, detail="Flower not found")
+    
+    # Invalidate stats cache for this user
+    stats_service.invalidate_user_cache(current_user.id)
     
     return {"message": "Flower deleted successfully"}

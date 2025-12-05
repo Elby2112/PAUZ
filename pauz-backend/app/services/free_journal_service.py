@@ -18,6 +18,7 @@ from app.database import get_session
 from fastapi import Depends
 from app.services.garden_service import garden_service
 from app.utils import pdf_generator
+from app.services.smart_storage_service import smart_storage_service
 
 # Import Google Gemini for FREE AI generation
 try:
@@ -118,13 +119,13 @@ class FreeJournalService:
         print("🤖 Using Google Gemini for hints...")
         
         if not current_content:
-            system_prompt = "You are a gentle, intuitive writing coach. Create one thoughtful, encouraging prompt to help someone begin journaling. Make it inviting, specific, and easy to respond to. Keep it to one sentence."
-            user_prompt = "Generate one thoughtful writing prompt for someone starting to journal. Make it gentle and inviting."
+            system_prompt = "You are a warm, gentle friend who creates cozy, inviting prompts for journaling. Your voice is like a soft blanket - comforting, safe, and encouraging. Create prompts that feel like a gentle invitation to share from the heart. Use words like 'perhaps', 'maybe', 'gentle', 'soft', 'inviting'. Make it feel safe and welcoming. Keep it to one warm sentence."
+            user_prompt = "Generate one warm, gentle writing prompt that feels like a soft invitation to begin journaling. Make it feel safe and comforting."
         else:
-            system_prompt = "You are a deeply empathetic writing coach who creates thoughtful, insightful questions to help people go deeper in their journaling. Your questions should be encouraging, specific to what they've written, and invite authentic reflection. Keep to one sentence."
-            user_prompt = f"""Someone is journaling and has written: "{current_content}"
+            system_prompt = "You are a deeply compassionate journaling companion who speaks with a soft, nurturing voice. Your questions should feel like gentle curiosity from a caring friend - never demanding, always inviting. Use words that create safety: 'perhaps', 'might', 'gentle', 'softly', 'inviting'. Your questions should feel like a warm hand on the shoulder, encouraging deeper sharing. Keep to one tender sentence."
+            user_prompt = f"""Someone is sharing their heart in their journal and has written: "{current_content}"
 
-Generate ONE thoughtful question or prompt to help them continue writing deeper. Make it specific to what they've written, encouraging, and open-ended."""
+Respond with ONE gentle question that feels like a soft invitation to explore more deeply. Make it sound like a caring friend gently wondering alongside them."""
 
         response = self.gemini_model.generate_content(f"{system_prompt}\n\n{user_prompt}")
         hint_text = response.text.strip()
@@ -137,13 +138,13 @@ Generate ONE thoughtful question or prompt to help them continue writing deeper.
         print("🤖 Using OpenAI for hints...")
         
         if not current_content:
-            system_prompt = "You are a gentle, intuitive writing coach. Create one thoughtful, encouraging prompt to help someone begin journaling. Make it inviting and specific. Keep to one sentence."
-            user_prompt = "Generate one thoughtful writing prompt for someone starting to journal."
+            system_prompt = "You are a warm, gentle friend who creates cozy, inviting prompts for journaling. Your voice is like a soft blanket - comforting, safe, and encouraging. Create prompts that feel like a gentle invitation to share from the heart. Use words like 'perhaps', 'maybe', 'gentle', 'soft', 'inviting'. Make it feel safe and welcoming. Keep to one warm sentence."
+            user_prompt = "Generate one warm, gentle writing prompt that feels like a soft invitation to begin journaling. Make it feel safe and comforting."
         else:
-            system_prompt = "You are a deeply empathetic writing coach who creates thoughtful, insightful questions to help people go deeper in their journaling. Make it encouraging and specific. Keep to one sentence."
-            user_prompt = f"""Someone is journaling and has written: "{current_content}"
+            system_prompt = "You are a deeply compassionate journaling companion who speaks with a soft, nurturing voice. Your questions should feel like gentle curiosity from a caring friend - never demanding, always inviting. Use words that create safety: 'perhaps', 'might', 'gentle', 'softly', 'inviting'. Your questions should feel like a warm hand on the shoulder, encouraging deeper sharing. Keep to one tender sentence."
+            user_prompt = f"""Someone is sharing their heart in their journal and has written: "{current_content}"
 
-Generate ONE thoughtful question or prompt to help them continue writing deeper."""
+Respond with ONE gentle question that feels like a soft invitation to explore more deeply. Make it sound like a caring friend gently wondering alongside them."""
 
         response = self.openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -165,57 +166,57 @@ Generate ONE thoughtful question or prompt to help them continue writing deeper.
         
         if not current_content:
             starter_hints = [
-                "What feels most present in your awareness right now?",
-                "What story is wanting to be told through you today?",
-                "If your body could speak, what would it say?",
-                "What emotion is asking for your attention?",
-                "What truth is waiting to be discovered here?",
-                "What part of yourself needs compassion right now?",
-                "How can you meet this moment with kindness?",
-                "What wisdom is your heart holding?",
-                "What does your intuition want you to know?",
-                "How are you really, beneath all the shoulds?"
+                "Perhaps you might gently notice what's present in your heart right now?",
+                "What soft whisper is wanting to be heard through you today?",
+                "If your breath could share a story, what might it lovingly say?",
+                "What gentle emotion is gently asking for your warm attention?",
+                "What tender truth is softly waiting to be discovered here?",
+                "What part of you might benefit from a little extra compassion right now?",
+                "How might you meet this moment with gentle kindness?",
+                "What warm wisdom is your heart gently holding?",
+                "What does your soft intuition want you to know?",
+                "How are you really, beneath all the gentle shoulds and musts?"
             ]
             return random.choice(starter_hints)
         
         # Analyze content for intelligent contextual hints
         content_lower = current_content.lower()
         
-        # Emotional cues
+        # Emotional cues with softer language
         if any(word in content_lower for word in ["sad", "depressed", "down", "blue"]):
-            return "What gentleness does this part of you need most right now?"
+            return "What gentle comfort might this tender part of you need right now?"
         
         if any(word in content_lower for word in ["happy", "joy", "grateful", "excited"]):
-            return "What makes this moment so precious and alive for you?"
+            return "What makes this moment feel so sweet and precious to you?"
         
         if any(word in content_lower for word in ["anxious", "worried", "stressed", "nervous"]):
-            return "What would happen if you breathed into this feeling instead of away from it?"
+            return "What might happen if you gently breathed into this feeling instead of away from it?"
         
         if any(word in content_lower for word in ["angry", "frustrated", "annoyed", "mad"]):
-            return "What important boundary or need is this anger protecting?"
+            return "What gentle boundary or loving need might this anger be protecting?"
         
-        # Content cues
+        # Content cues with softer approach
         if "work" in content_lower or "job" in content_lower:
-            return "How does your work connect to your deeper values and purpose?"
+            return "How might your work gently connect to your deeper values and purpose?"
         
         if "family" in content_lower or "friend" in content_lower:
-            return "What role do these relationships play in your growth right now?"
+            return "What gentle role do these relationships play in your growth right now?"
         
         if "love" in content_lower or "relationship" in content_lower:
-            return "How does this connection help you understand yourself better?"
+            return "How might this connection gently help you understand yourself better?"
         
-        # General continuation hints
+        # General continuation hints with softer voice
         continuation_hints = [
-            "What else wants to be expressed about this?",
-            "How does this resonate in your body and breath?",
-            "What wisdom is hidden beneath these words?",
-            "If you could speak to this part of yourself, what would you ask?",
-            "What unexpected insight is emerging here?",
-            "How does this connect to your larger life journey?",
-            "What would your future self tell you about this?",
-            "What medicine does this experience offer you?",
-            "How can you meet this with more compassion?",
-            "What transformation is this moment inviting?"
+            "What else might gently want to be expressed about this?",
+            "How might this gently resonate in your body and breath?",
+            "What gentle wisdom might be hidden beneath these words?",
+            "If you could speak gently to this part of yourself, what might you ask?",
+            "What unexpected gentle insight might be emerging here?",
+            "How might this connect to your larger life journey with grace?",
+            "What might your future self gently tell you about this?",
+            "What gentle medicine does this experience offer you?",
+            "How might you meet this with more gentle compassion?",
+            "What gentle transformation is this moment softly inviting?"
         ]
         
         return random.choice(continuation_hints)
@@ -338,11 +339,7 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
                           order: str = "desc") -> List[FreeJournal]:
         """Retrieve all Free Journal sessions for a user with filtering"""
         # ⭐ FIXED: Filter out empty journals by default
-        query = select(FreeJournal).where(
-            FreeJournal.user_id == user_id,
-            FreeJournal.content != "",  # Exclude empty content
-            FreeJournal.content.is_not(None)  # Exclude null content
-        )
+        query = select(FreeJournal).where(FreeJournal.user_id == user_id)
         
         # Date filtering
         if start_date:
@@ -445,28 +442,23 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
             if len(audio_file) > 25 * 1024 * 1024:  # 25MB limit
                 raise ValueError("Audio file too large (max 25MB)")
 
-            # Upload audio to SmartBucket - NO FALLBACKS
+            # Upload audio to SmartStorage - ORGANIZED STORAGE
             audio_id = str(uuid.uuid4())
-            print(f"📁 Uploading audio to SmartBucket with ID: {audio_id}")
+            print(f"📁 Uploading audio to SmartStorage with ID: {audio_id}")
 
             try:
-                # Convert bytes to base64 for SmartBucket storage
-                import base64
-                audio_base64 = base64.b64encode(audio_file).decode('utf-8')
-                
-                # Store in SmartBucket using existing journal-prompts bucket
-                self.client.bucket.put(
-                    bucket_location={
-                        "bucket": {
-                            "name": "journal-prompts",
-                            "application_name": self.application_name
-                        }
-                    },
-                    key=f"voice_recording_{audio_id}",
-                    content=audio_base64,
-                    content_type="audio/wav"
+                # Store in SmartStorage with organized structure
+                voice_success = smart_storage_service.store_voice_recording(
+                    user_id=user_id,
+                    session_id=session_id,
+                    audio_data=audio_file
                 )
-                print("✅ Audio uploaded to SmartBucket successfully")
+                
+                if voice_success:
+                    print("✅ Audio uploaded to SmartStorage successfully")
+                else:
+                    print("❌ SmartStorage upload failed")
+                    raise ValueError("SmartStorage upload failed")
             except Exception as storage_error:
                 print(f"❌ SmartBucket audio upload failed: {storage_error}")
                 raise ValueError(f"SmartBucket audio storage failed: {storage_error}")
@@ -602,16 +594,101 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
         # Use AI for mood analysis
         analysis = self.analyze_mood_with_gemini(free_journal.content)
         
+        # Generate a short, personal note for the garden
+        garden_note = self._generate_garden_note(free_journal.content, analysis["mood"])
+        
         # Create garden entry with flower mapping
         garden_service.create_garden_entry(
             user_id=user_id,
             mood=analysis["mood"],
-            note=analysis["summary"],
+            note=garden_note,
             flower_type=analysis["flower_type"],
             db=db
         )
 
         return analysis
+
+    def _generate_garden_note(self, content: str, mood: str) -> str:
+        """Generate a short, personal note for the garden based on journal content"""
+        content_lower = content.lower()
+        
+        # Extract key activities and events
+        activities = []
+        
+        # Meeting people
+        if any(word in content_lower for word in ["met", "meet", "friend", "talked", "conversation", "chat"]):
+            activities.append("met a friend")
+        elif any(word in content_lower for word in ["family", "mom", "dad", "brother", "sister"]):
+            activities.append("connected with family")
+        elif any(word in content_lower for word in ["call", "phone", "texted"]):
+            activities.append("reached out to someone")
+        
+        # Self-care activities
+        if any(word in content_lower for word in ["shower", "bath", "clean"]):
+            activities.append("had a shower")
+        elif any(word in content_lower for word in ["walk", "exercise", "gym", "workout"]):
+            activities.append("moved your body")
+        elif any(word in content_lower for word in ["sleep", "rest", "nap"]):
+            activities.append("got some rest")
+        elif any(word in content_lower for word in ["meditate", "breathe", "quiet"]):
+            activities.append("took time to breathe")
+        
+        # Work/productivity
+        if any(word in content_lower for word in ["work", "job", "office", "meeting"]):
+            activities.append("worked on projects")
+        elif any(word in content_lower for word in ["study", "learn", "read", "book"]):
+            activities.append("learned something new")
+        elif any(word in content_lower for word in ["create", "write", "make", "build"]):
+            activities.append("created something")
+        
+        # Food/meal activities
+        if any(word in content_lower for word in ["cook", "cooked", "meal", "food", "eat", "dinner", "lunch", "breakfast"]):
+            activities.append("enjoyed a meal")
+        elif any(word in content_lower for word in ["coffee", "tea", "drink"]):
+            activities.append("had a warm drink")
+        
+        # Leisure/fun
+        if any(word in content_lower for word in ["movie", "show", "watch", "netflix"]):
+            activities.append("watched something")
+        elif any(word in content_lower for word in ["music", "song", "listen"]):
+            activities.append("enjoyed music")
+        elif any(word in content_lower for word in ["game", "play"]):
+            activities.append("had some fun")
+        
+        # Nature/outdoors
+        if any(word in content_lower for word in ["park", "nature", "outside", "sun", "rain"]):
+            activities.append("spent time outdoors")
+        
+        # Shopping/errands
+        if any(word in content_lower for word in ["shop", "buy", "store", "grocery"]):
+            activities.append("ran errands")
+        
+        # Emotions/feelings summary
+        if mood == "happy" or any(word in content_lower for word in ["happy", "joy", "excited", "great"]):
+            emotion_desc = "felt happy"
+        elif mood == "sad" or any(word in content_lower for word in ["sad", "cry", "down", "hurt"]):
+            emotion_desc = "processed emotions"
+        elif mood == "anxious" or any(word in content_lower for word in ["anxious", "worry", "stress", "nervous"]):
+            emotion_desc = "managed stress"
+        elif mood == "grateful" or any(word in content_lower for word in ["grateful", "thankful", "blessed"]):
+            emotion_desc = "felt grateful"
+        elif mood == "calm" or any(word in content_lower for word in ["calm", "peace", "relax"]):
+            emotion_desc = "found peace"
+        else:
+            emotion_desc = "reflected on your day"
+        
+        # Build the note - prioritize activities, fall back to emotion
+        if activities:
+            # Take 1-2 key activities
+            note = "you " + " and ".join(activities[:2])
+        else:
+            note = emotion_desc
+        
+        # Add context if it's a short note
+        if len(note.split()) <= 3:
+            note += " today"
+        
+        return note
 
     def export_to_pdf(self, session_id: str, user_id: str, db: Session = Depends(get_session)) -> str:
         """Export a free journal to PDF using Vultr S3"""

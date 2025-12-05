@@ -1,0 +1,835 @@
+INFO:     Will watch for changes in these directories: ['/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [2764] using StatReload
+INFO:     Started server process [2766]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+✅ Google Gemini client initialized for FREE AI generation
+✅ Google Gemini client initialized for FREE AI hints
+2025-12-03 13:59:45,790 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 13:59:45,790 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 13:59:45,790 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 13:59:45,791 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 404 Not Found"
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.421845 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.823173 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:     Application startup complete.
+✅ Raindrop client initialized for application: pauz-journaling
+✅ Raindrop service initialized successfully
+INFO:     127.0.0.1:57343 - "GET / HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'app/services/free_journal_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2766]
+INFO:     Started server process [3001]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+✅ Google Gemini client initialized for FREE AI generation
+✅ Google Gemini client initialized for FREE AI hints
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 14:14:46,413 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:46,414 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 404 Not Found"
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.461085 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.979628 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/routes/free_journal.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3001]
+INFO:     Started server process [3006]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+✅ Google Gemini client initialized for FREE AI generation
+✅ Google Gemini client initialized for FREE AI hints
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 14:14:58,890 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,891 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 14:14:58,891 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:14:58,891 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 404 Not Found"
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.420917 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.957972 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'clean_empty_journals.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3006]
+INFO:     Started server process [3014]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+✅ Google Gemini client initialized for FREE AI generation
+✅ Google Gemini client initialized for FREE AI hints
+2025-12-03 14:15:35,142 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 14:15:35,142 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:15:35,143 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 404 Not Found"
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.427710 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.758233 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/services/free_journal_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3014]
+INFO:     Started server process [3035]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+✅ Google Gemini client initialized for FREE AI generation
+✅ Google Gemini client initialized for FREE AI hints
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,729 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:16:24,730 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 404 Not Found"
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.449731 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:raindrop._base_client:Retrying request to /v1/get_object in 0.814622 seconds
+INFO:httpx:HTTP Request: POST https://api.raindrop.run/v1/get_object "HTTP/1.1 500 Internal Server Error"
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'backend/app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3035]
+Process SpawnProcess-6:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'backend/app/__init__.py'. Reloading...
+Process SpawnProcess-7:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'backend/scripts/cleanup_project.py'. Reloading...
+Process SpawnProcess-8:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'backend/scripts/cleanup_project.py'. Reloading...
+Process SpawnProcess-9:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'backend/scripts/cleanup_project.py'. Reloading...
+Process SpawnProcess-10:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'backend/scripts/cleanup_project.py'. Reloading...
+Process SpawnProcess-11:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+WARNING:  StatReload detected changes in 'app/services/jwt_service.py'. Reloading...
+Process SpawnProcess-12:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 12, in <module>
+    from app.routes import auth, free_journal, guided_journal, garden, profile
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/routes/auth.py", line 10, in <module>
+    from app.services import auth_service
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/services/auth_service.py", line 17, in <module>
+    from mcp import put_object, get_object, delete_object
+ModuleNotFoundError: No module named 'mcp'
+WARNING:  StatReload detected changes in 'app/services/auth_service.py'. Reloading...
+Process SpawnProcess-13:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 22, in import_from_string
+    raise exc from None
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 12, in <module>
+    from app.routes import auth, free_journal, guided_journal, garden, profile
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/routes/free_journal.py", line 3, in <module>
+    from app.services.free_journal_service import free_journal_service
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/services/free_journal_service.py", line 20, in <module>
+    from app.services.storage_service import storage_service
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/services/storage_service.py", line 9, in <module>
+    from mcp import get_object, put_object, list_objects
+ModuleNotFoundError: No module named 'mcp'
+WARNING:  StatReload detected changes in 'app/services/storage_service.py'. Reloading...
+Process SpawnProcess-14:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 12, in <module>
+    from app.routes import auth, free_journal, guided_journal, garden, profile
+ImportError: cannot import name 'profile' from 'app.routes' (/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/routes/__init__.py)
+✅ Raindrop client initialized for app: pauz-journaling
+⚠️ Please add your Gemini API key to .env
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+Process SpawnProcess-15:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 13, in <module>
+    from app.database import engine, create_tables
+ImportError: cannot import name 'create_tables' from 'app.database' (/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/database.py)
+✅ Raindrop client initialized for app: pauz-journaling
+⚠️ Please add your Gemini API key to .env
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+Process SpawnProcess-16:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 13, in <module>
+    from app.database import engine, create_tables
+ImportError: cannot import name 'create_tables' from 'app.database' (/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/database.py)
+✅ Raindrop client initialized for app: pauz-journaling
+⚠️ Please add your Gemini API key to .env
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+INFO:     Started server process [4418]
+INFO:     Waiting for application startup.
+ERROR:    Traceback (most recent call last):
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 211, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 211, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 211, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 211, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 211, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 571, in __aenter__
+    await self._router.startup()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 671, in startup
+    await handler()
+  File "/Users/loubnabouzenzen/Desktop/PAUZ/pauz-backend/app/main.py", line 65, in startup_event
+    create_tables()
+    ^^^^^^^^^^^^^
+NameError: name 'create_tables' is not defined
+
+ERROR:    Application startup failed. Exiting.
+✅ Raindrop client initialized for app: pauz-journaling
+⚠️ Please add your Gemini API key to .env
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+INFO:     Started server process [4420]
+INFO:     Waiting for application startup.
+✅ Raindrop client initialized for app: pauz-journaling
+⚠️ Please add your Gemini API key to .env
+2025-12-03 14:39:26,280 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-12-03 14:39:26,280 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-12-03 14:39:26,280 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("freejournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("freejournal")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournal")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournal")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("prompt")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("prompt")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("guidedjournalentry")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("guidedjournalentry")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("garden")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("garden")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("hint")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("hint")
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-12-03 14:39:26,281 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4420]
+INFO:     Stopping reloader process [2764]

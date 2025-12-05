@@ -1,0 +1,86 @@
+/* Enhanced floating button styles with voice assistant support */
+
+.floating-help-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  z-index: 999;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.floating-help-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.floating-help-btn:active {
+  transform: translateY(0);
+}
+
+/* Pulse animation for first-time visitors */
+@keyframes helpButtonPulse {
+  0% { 
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6);
+    transform: scale(1.05);
+  }
+  100% { 
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: scale(1);
+  }
+}
+
+.floating-help-btn.first-visit {
+  animation: helpButtonPulse 2s infinite;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .floating-help-btn {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+/* Ensure button is above other elements */
+.floating-help-btn:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3), 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* Optional: Add subtle glow effect */
+.floating-help-btn::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.floating-help-btn:hover::before {
+  opacity: 0.3;
+}

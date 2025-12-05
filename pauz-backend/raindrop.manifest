@@ -1,9 +1,0 @@
-application "pauz-journaling" {
-  smartbucket "journal-prompts" {}
-  smartbucket "journal-analysis" {}
-  smartbucket "free-journals" {}
-  smartbucket "hints" {}
-  smartbucket "garden" {}
-  smartmemory "user-memories" {}
-  smartmemory "ai-contexts" {}
-}

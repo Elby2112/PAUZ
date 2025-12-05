@@ -60,6 +60,8 @@ app.include_router(guided_journal.router, prefix="/guided_journal", tags=["Guide
 app.include_router(garden.router, prefix="/garden", tags=["Garden"])
 app.include_router(stats.router, prefix="/profile", tags=["Profile & Stats"])
 app.include_router(stats.router, prefix="/stats", tags=["Stats"])  # Add separate stats prefix for frontend
+from app.routes import voice_assistant
+app.include_router(voice_assistant.router, prefix="/voice-assistant", tags=["Voice Assistant"])
 
 @app.on_event("startup")
 async def startup_event():

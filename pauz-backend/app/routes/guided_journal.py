@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from app.services.guided_journal_service import guided_journal_service
 from app.models import GuidedJournal, GuidedJournalEntry, Prompt, User
 from app.utils import pdf_generator
+from app.services.stats_service import stats_service
+from app.services.journal_loading_service import journal_loading_service
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 from app.dependencies import get_current_user
 
 
@@ -63,16 +65,30 @@ def create_journal_route(
         prompts_data=prompts_data,
         entries_data=entries_data
     )
+    
+    # Invalidate both stats and journal loading cache for this user
+    stats_service.invalidate_user_cache(current_user.id)
+    journal_loading_service.invalidate_user_cache(current_user.id)
+    
     return db_guided_journal
 
-@router.get("/", response_model=List[dict])
+@router.get("/", response_model=List[Dict])
 def get_user_journals_route(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    previews_only: bool = Query(True, description="Return previews only for faster loading")
 ):
     """
     Retrieves all journals for the current user from the SmartBucket.
+    - previews_only=True (default): Returns lightweight previews with caching (fast)
+    - previews_only=False: Returns full journal data (slower, for detailed view)
     """
-    guided_journals = guided_journal_service.get_user_guided_journals(current_user.id)
+    if previews_only:
+        # Use optimized preview service with caching
+        guided_journals = journal_loading_service.get_user_guided_journals_preview(current_user.id)
+    else:
+        # Use original service for full content
+        guided_journals = guided_journal_service.get_user_guided_journals(current_user.id)
+    
     return guided_journals
 
 @router.get("/{journal_id}", response_model=dict)
@@ -154,6 +170,9 @@ def delete_journal_route(
     """
     success = guided_journal_service.delete_guided_journal(current_user.id, journal_id)
     if success:
+        # Invalidate both stats and journal loading cache for this user
+        stats_service.invalidate_user_cache(current_user.id)
+        journal_loading_service.invalidate_user_cache(current_user.id)
         return {"message": "Guided journal deleted successfully"}
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guided journal not found")

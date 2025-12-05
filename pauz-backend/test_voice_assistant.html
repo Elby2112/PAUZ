@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Assistant Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .audio-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f8f9ff;
+        }
+        .text-display {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            font-style: italic;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group input {
+            width: 70%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .input-group button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 Voice Assistant Test Page</h1>
+    
+    <div class="status info">
+        <strong>📝 Note:</strong> Make sure you're logged into your app and have a valid auth token. 
+        This page tests the Voice Assistant endpoints.
+    </div>
+
+    <!-- Welcome Message Test -->
+    <div class="test-section">
+        <h3>🏠 Welcome Message Test</h3>
+        <p>Tests the personalized welcome greeting for logged-in users.</p>
+        
+        <button class="test-button" onclick="testWelcomeMessage()">Play Welcome Message</button>
+        
+        <div id="welcome-status"></div>
+        <div id="welcome-audio"></div>
+        <div id="welcome-text"></div>
+    </div>
+
+    <!-- User Context Test -->
+    <div class="test-section">
+        <h3>👤 User Context Test</h3>
+        <p>Shows user statistics used for personalization.</p>
+        
+        <button class="test-button" onclick="testUserContext()">Get User Context</button>
+        
+        <div id="context-status"></div>
+        <div id="context-data"></div>
+    </div>
+
+    <!-- Guidance Test -->
+    <div class="test-section">
+        <h3>🎯 Guidance Test</h3>
+        <p>Tests the voice assistant's ability to answer questions.</p>
+        
+        <div class="input-group">
+            <input type="text" id="guidance-question" placeholder="What can I do here?" value="What can I do here?">
+            <button class="test-button" onclick="testGuidance()">Ask Question</button>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="custom-question" placeholder="Ask anything about journaling...">
+            <button class="test-button" onclick="testCustomGuidance()">Ask Custom Question</button>
+        </div>
+        
+        <div id="guidance-status"></div>
+        <div id="guidance-audio"></div>
+        <div id="guidance-text"></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="test-section">
+        <h3>⚡ Quick Actions</h3>
+        <p>Pre-set questions to test different scenarios.</p>
+        
+        <button class="test-button" onclick="quickQuestion('What can I do here?')">What can I do here?</button>
+        <button class="test-button" onclick="quickQuestion('I\'m feeling stuck')">I'm feeling stuck</button>
+        <button class="test-button" onclick="quickQuestion('How do I get started?')">How do I get started?</button>
+        <button class="test-button" onclick="quickQuestion('Encourage me')">Encourage me</button>
+        
+        <div id="quick-status"></div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8000";
+
+        // Get auth token from localStorage (same as your app)
+        function getAuthHeaders() {
+            const token = localStorage.getItem("pauz_token");
+            if (!token) {
+                return {
+                    "Content-Type": "application/json"
+                };
+            }
+            return {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            };
+        }
+
+        function updateStatus(elementId, message, type = 'info') {
+            const statusDiv = document.getElementById(elementId);
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function playAudio(audioData, contentType, text, containerId, textId) {
+            const audioContainer = document.getElementById(containerId);
+            const textContainer = document.getElementById(textId);
+            
+            // Create audio element
+            audioContainer.innerHTML = `
+                <div class="audio-container">
+                    <h4>🔊 Audio Response</h4>
+                    <audio controls autoplay style="width: 100%;">
+                        <source src="data:${contentType};base64,${audioData}" type="${contentType}">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            `;
+            
+            // Display text
+            if (textContainer) {
+                textContainer.innerHTML = `<div class="text-display"><strong>Assistant:</strong> ${text}</div>`;
+            }
+        }
+
+        async function testWelcomeMessage() {
+            updateStatus('welcome-status', '🔄 Generating welcome message...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/voice-assistant/welcome`, {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        user_context: null,
+                        time_of_day: new Date().getHours()
+                    }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        updateStatus('welcome-status', '✅ Welcome message generated successfully!', 'success');
+                        playAudio(result.audio_data, result.content_type, result.text, 'welcome-audio', 'welcome-text');
+                    } else {
+                        updateStatus('welcome-status', `❌ Failed: ${result.error || 'Unknown error'}`, 'error');
+                    }
+                } else {
+                    const error = await response.json();
+                    updateStatus('welcome-status', `❌ API Error (${response.status}): ${error.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('welcome-status', `❌ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testUserContext() {
+            updateStatus('context-status', '🔄 Loading user context...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/voice-assistant/user-context`, {
+                    headers: getAuthHeaders(),
+                });
+
+                if (response.ok) {
+                    const context = await response.json();
+                    updateStatus('context-status', '✅ User context loaded successfully!', 'success');
+                    
+                    const contextDiv = document.getElementById('context-data');
+                    contextDiv.innerHTML = `
+                        <div class="text-display">
+                            <strong>User Statistics:</strong><br>
+                            📝 Total Journals: ${context.total_journals}<br>
+                            🎯 Free Journals: ${context.total_free_journals}<br>
+                            📚 Guided Journals: ${context.total_guided_journals}<br>
+                            📅 Last Journal: ${context.last_journal_days_ago ? context.last_journal_days_ago + ' days ago' : 'Never'}<br>
+                            🔄 Returning User: ${context.is_returning_user ? 'Yes' : 'No'}
+                        </div>
+                    `;
+                } else {
+                    const error = await response.json();
+                    updateStatus('context-status', `❌ API Error (${response.status}): ${error.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('context-status', `❌ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGuidance() {
+            const question = document.getElementById('guidance-question').value;
+            if (!question.trim()) {
+                updateStatus('guidance-status', '⚠️ Please enter a question', 'error');
+                return;
+            }
+            
+            await askQuestion(question, 'guidance-status', 'guidance-audio', 'guidance-text');
+        }
+
+        async function testCustomGuidance() {
+            const question = document.getElementById('custom-question').value;
+            if (!question.trim()) {
+                updateStatus('guidance-status', '⚠️ Please enter a question', 'error');
+                return;
+            }
+            
+            await askQuestion(question, 'guidance-status', 'guidance-audio', 'guidance-text');
+        }
+
+        async function quickQuestion(question) {
+            await askQuestion(question, 'quick-status');
+        }
+
+        async function askQuestion(question, statusId, audioId = null, textId = null) {
+            updateStatus(statusId, `🔄 Asking: "${question}"`, 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/voice-assistant/guidance`, {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        question: question,
+                        context: "test"
+                    }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        updateStatus(statusId, '✅ Response generated successfully!', 'success');
+                        if (audioId && textId) {
+                            playAudio(result.audio_data, result.content_type, result.text, audioId, textId);
+                        } else {
+                            // For quick actions, create temporary displays
+                            const tempAudio = document.createElement('div');
+                            tempAudio.id = 'temp-audio';
+                            document.getElementById(statusId).appendChild(tempAudio);
+                            const tempText = document.createElement('div');
+                            tempText.id = 'temp-text';
+                            document.getElementById(statusId).appendChild(tempText);
+                            playAudio(result.audio_data, result.content_type, result.text, 'temp-audio', 'temp-text');
+                        }
+                    } else {
+                        updateStatus(statusId, `❌ Failed: ${result.error || 'Unknown error'}`, 'error');
+                    }
+                } else {
+                    const error = await response.json();
+                    updateStatus(statusId, `❌ API Error (${response.status}): ${error.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                updateStatus(statusId, `❌ Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Page load instructions
+        window.onload = function() {
+            console.log('Voice Assistant Test Page Loaded');
+            console.log('Make sure your backend is running and you have a valid auth token');
+        };
+    </script>
+</body>
+</html>
