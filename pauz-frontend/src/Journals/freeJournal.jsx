@@ -33,7 +33,9 @@ const FreeJournal = () => {
   const [hint, setHint] = useState(null);
   const [hintLoading, setHintLoading] = useState(false);
   const [aiReflection, setAiReflection] = useState(null);
-  
+
+  const [transcribing, setTranscribing] = useState(false);
+ 
   // NEW STATE FOR PDF EXPORT
   const [exportLoading, setExportLoading] = useState(false);
   const [showExportConfirm, setShowExportConfirm] = useState(false);
@@ -428,9 +430,12 @@ const sendAudioToBackend = async (audioBlob) => {
   } catch (error) {
     console.error('Voice transcription error:', error);
     alert('Failed to transcribe audio. Please try again.');
-  } finally {
-    setLoading(false);
-  }
+  }  finally {
+  setLoading(false);
+  setTranscribing(false);  // 🔥 close the overlay when transcription done
+  setMode("write");
+}
+
 };
 
 // Update your voice mode button to actually record
@@ -569,36 +574,63 @@ const handleVoiceModeClick = async () => {
 {mode === "voice" && (
   <div className="fj-voice-overlay active">
     <div className="fj-voice-box">
+
       <div className="fj-visual-row">
+        {/* MIC ICON */}
         <img 
           src={micIcon} 
           alt="Recording" 
-          className={`fj-voice-icon ${recording ? 'pulsing' : ''}`} 
+          className={`fj-voice-icon ${recording ? 'pulsing' : ''}`}
         />
+
+        {/* DOTS ONLY WHEN RECORDING */}
         {recording && (
           <div className="fj-voice-dots-row">
             <span></span><span></span><span></span>
           </div>
         )}
-        <img src={journalIcon} alt="Journal" className="fj-journal-icon" />
+
+        {/* JOURNAL ICON */}
+        <img 
+          src={journalIcon} 
+          alt="Journal" 
+          className="fj-journal-icon" 
+        />
       </div>
-      
-      <p>
-        {recording 
-          ? "Recording... Speak now. Your words will be transcribed automatically." 
-          : "Processing your recording..."}
+
+      {/* TEXT AREA */}
+      <p className="fj-voice-text">
+        {recording && "Recording... Speak now. Your words will be transcribed automatically."}
+        {transcribing && !recording && (
+          <span className="transcribing-text">
+            Transcribing your audio… please wait
+          </span>
+        )}
       </p>
-      
-      <button 
-        onClick={stopRecording}
-        disabled={!recording}
-        className={recording ? 'recording-active' : ''}
-      >
-        {recording ? '🛑 Stop Recording' : 'Processing...'}
-      </button>
+
+      {/* BUTTONS */}
+      {recording && (
+        <button 
+          onClick={stopRecording}
+          className="recording-active"
+        >
+          🛑 Stop Recording
+        </button>
+      )}
+
+      {transcribing && !recording && (
+        <button 
+          disabled
+          className="processing-btn"
+        >
+          ⏳ Transcribing...
+        </button>
+      )}
+
     </div>
   </div>
 )}
+
 
       {/* AI REFLECTION OVERLAY */}
       {aiOpen && (

@@ -1,59 +1,28 @@
-// FloatingHelpButton.jsx - INTEGRATED WITH VOICE ASSISTANT
+// FloatingHelpButton.jsx - Modern, Predictable
 import React, { useState, useEffect } from "react";
-import "../styles/floatingButton.css"
-import VoiceAssistant from "./VoiceAssistant"; // Import the voice assistant component
-import "../styles/voiceAssistant.css"; // Import voice assistant styles
+import "../styles/floatingButton.css";
+import VoiceAssistant from "./VoiceAssistant";
+import "../styles/voiceAssistant.css";
 
 const FloatingHelpButton = () => {
   const [showAssistant, setShowAssistant] = useState(false);
   const [autoPlayWelcome, setAutoPlayWelcome] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
 
-  // 🌟 Detect First Visit
+  // 🌟 Detect first visit
   useEffect(() => {
     const hasVisited = localStorage.getItem("pauz_has_visited_before");
     if (!hasVisited) {
       setIsFirstVisit(true);
-      // OPTIONAL: auto show assistant first time
+      // Optional: auto-show assistant on first visit
       // setShowAssistant(true);
       // setAutoPlayWelcome(true);
       // localStorage.setItem("pauz_has_visited_before", "true");
     }
   }, []);
 
-  // 🌟 Smart Idle Trigger (2 min)
-  useEffect(() => {
-    let inactivityTimer;
-
-    const resetTimer = () => {
-      clearTimeout(inactivityTimer);
-
-      inactivityTimer = setTimeout(() => {
-        if (!showAssistant) {
-          setShowAssistant(true);
-          setAutoPlayWelcome(false);
-        }
-      }, 120000); // 2 min idle
-    };
-
-    const events = ["mousedown", "keypress", "scroll", "touchstart"];
-    events.forEach((event) =>
-      document.addEventListener(event, resetTimer, true)
-    );
-
-    resetTimer(); // Start immediately
-
-    return () => {
-      events.forEach((event) =>
-        document.removeEventListener(event, resetTimer, true)
-      );
-      clearTimeout(inactivityTimer);
-    };
-  }, [showAssistant]);
-
-  // 🌟 Manual open
+  // 🌟 Open assistant manually
   const openAssistant = () => {
-    console.log("🎤 Voice Assistant opened");
     setShowAssistant(true);
     setAutoPlayWelcome(true);
   };
@@ -77,10 +46,10 @@ const FloatingHelpButton = () => {
         onClick={openAssistant}
         title="Need help?"
       >
-        🎤 Need Help?
+       Need Help?
       </button>
 
-      {/* Mini Voice Assistant Card */}
+      {/* Voice Assistant */}
       <VoiceAssistant
         isVisible={showAssistant}
         onClose={handleAssistantClose}

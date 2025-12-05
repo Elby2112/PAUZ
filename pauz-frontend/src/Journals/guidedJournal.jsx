@@ -256,7 +256,7 @@ const GuidedJournaling = () => {
           >
             <img src={quillIcon} alt="Write" />
           </button>
-
+{/*
           <button
             className={`gj-icon-btn ${mode === "voice" ? "active" : ""}`}
             onClick={() => { setMode("voice"); setRecording(true); }}
@@ -265,7 +265,8 @@ const GuidedJournaling = () => {
           >
             <img src={micIcon} alt="Record" />
           </button>
-          
+          */
+}
           <button 
             className={`gj-icon-btn save-btn ${isSaving ? "loading" : ""}`}
             onClick={saveJournal}
