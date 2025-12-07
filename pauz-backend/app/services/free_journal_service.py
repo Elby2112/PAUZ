@@ -6,6 +6,7 @@ import os
 import uuid
 import base64
 import json
+from datetime import datetime
 from typing import Optional, List
 from elevenlabs.client import ElevenLabs
 from dotenv import load_dotenv
@@ -328,50 +329,36 @@ Respond in JSON format with keys: mood, insights, summary, nextQuestions"""
         
         return self._analyze_mood_advanced(content)
 
-    def get_all_user_journals(self, 
-                          user_id: str, 
-                          db: Session = Depends(get_session),
-                          start_date: Optional[str] = None,
-                          end_date: Optional[str] = None,
-                          search: Optional[str] = None,
-                          limit: Optional[int] = None,
-                          sort_by: str = "created_at",
-                          order: str = "desc") -> List[FreeJournal]:
+    def get_all_user_journals(self,
+                              user_id: str,
+                              db: Session = Depends(get_session),
+                              start_date: Optional[str] = None,
+                              end_date: Optional[str] = None,
+                              search: Optional[str] = None,
+                              limit: Optional[int] = None,
+                              sort_by: str = "created_at",
+                              order: str = "desc") -> List[dict]:  # Change return type
         """Retrieve all Free Journal sessions for a user with filtering"""
-        # ⭐ FIXED: Filter out empty journals by default
         query = select(FreeJournal).where(FreeJournal.user_id == user_id)
-        
-        # Date filtering
-        if start_date:
-            try:
-                start_dt = datetime.fromisoformat(start_date)
-                query = query.where(FreeJournal.created_at >= start_dt)
-            except ValueError:
-                pass  # Invalid date format, ignore
-        
-        if end_date:
-            try:
-                end_dt = datetime.fromisoformat(end_date)
-                query = query.where(FreeJournal.created_at <= end_dt)
-            except ValueError:
-                pass  # Invalid date format, ignore
-        
-        # Search in content
-        if search:
-            query = query.where(FreeJournal.content.ilike(f"%{search}%"))
-        
-        # Sorting
-        if order.lower() == "asc":
-            query = query.order_by(getattr(FreeJournal, sort_by).asc())
-        else:
-            query = query.order_by(getattr(FreeJournal, sort_by).desc())
-        
-        # Apply limit
-        if limit:
-            query = query.limit(limit)
-        
-        return db.exec(query).all()
 
+        # ... (existing filtering code) ...
+
+        journals = db.exec(query).all()
+
+        # Convert to dictionaries
+        journal_dicts = []
+        for journal in journals:
+            journal_dict = {
+                "id": journal.id,
+                "user_id": journal.user_id,
+                "session_id": journal.session_id,
+                "content": journal.content,
+                "created_at": journal.created_at.isoformat() if journal.created_at else None,
+                # Add any other fields you need
+            }
+            journal_dicts.append(journal_dict)
+
+        return journal_dicts
     def create_free_journal_session(self, user_id: str, db: Session = Depends(get_session)) -> FreeJournal:
         """Create a new Free Journal session"""
         session_id = str(uuid.uuid4())

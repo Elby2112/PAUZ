@@ -4,6 +4,9 @@ Uses Gemini for unique prompt generation while storing in SmartBucket (Raindrop)
 """
 import os
 from dotenv import load_dotenv
+
+from app.services.storage_service import storage_service
+
 load_dotenv()
 from typing import List, Optional
 from sqlmodel import Session, select

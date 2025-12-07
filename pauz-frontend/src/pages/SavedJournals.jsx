@@ -1,4 +1,4 @@
-// SavedJournals.jsx - FIXED VERSION
+// SavedJournals.jsx - FIXED VERSION WITH GUIDED JOURNAL CONTENT FIX
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/savedJournals.css";
 
@@ -51,28 +51,32 @@ const SavedJournals = () => {
   };
 
   const fetchJournals = async () => {
-    setLoading(true);
-    try {
-      const headers = getAuthHeaders();
-      console.log('🔍 Fetching journals with headers:', headers);
+  setLoading(true);
+  try {
+    const headers = getAuthHeaders();
+    console.log('🔍 Fetching journals with headers:', headers);
 
-      const [freeRes, guidedRes] = await Promise.all([
-        fetch(`${API_BASE}/freejournal/`, { method: "GET", headers }),
-        fetch(`${API_BASE}/guided_journal/`, { method: "GET", headers }),
-      ]);
+    // ADD ?previews_only=false TO GET FULL CONTENT
+    const [freeRes, guidedRes] = await Promise.all([
+      fetch(`${API_BASE}/freejournal/?previews_only=false`, { method: "GET", headers }),
+      fetch(`${API_BASE}/guided_journal/?previews_only=false`, { method: "GET", headers }),
+    ]);
 
-      console.log('📡 Free journal response status:', freeRes.status);
-      console.log('📡 Guided journal response status:', guidedRes.status);
+    console.log('📡 Free journal response status:', freeRes.status);
+    console.log('📡 Guided journal response status:', guidedRes.status);
 
-      const all = [];
+    const all = [];
+    
+    // ... rest of your code
 
       // Process free journals
       if (freeRes.ok) {
         const freeData = await freeRes.json();
         console.log('✅ Free journals loaded:', freeData.length, 'items');
         freeData.forEach((j, i) => {
-          const titleFromContent = j.content && j.content.trim()
-            ? j.content.split(" ").slice(0, 6).join(" ")
+          const journalContent = j.content_preview || j.content || "";
+          const titleFromContent = journalContent && journalContent.trim()
+            ? journalContent.split(" ").slice(0, 6).join(" ")
             : "";
           all.push({
             ...j,
@@ -81,7 +85,7 @@ const SavedJournals = () => {
             identifier: j.session_id || j.id,
             coverTone: ["warm-beige", "sage", "lavender"][i % 3],
             created_at: j.created_at || new Date().toISOString(),
-            content: j.content || "",
+            content: journalContent,
           });
         });
       } else {
@@ -90,83 +94,76 @@ const SavedJournals = () => {
         console.log('Free journals error:', errorText);
       }
 
-      // Process guided journals - FIXED SECTION
+      // Process guided journals - UPDATED FIX FOR CONTENT DISPLAY
       if (guidedRes.ok) {
         const gdata = await guidedRes.json();
         console.log('✅ Guided journals loaded:', gdata.length, 'items');
-        console.log('🔍 Guided journal sample structure:', gdata[0] ? Object.keys(gdata[0]) : 'No data');
+        
+        // DEBUG: Check actual data structure
+        if (gdata.length > 0) {
+          console.log('🔍 FIRST GUIDED JOURNAL DATA STRUCTURE:', Object.keys(gdata[0]));
+          console.log('🔍 Does it have entries?', gdata[0]?.entries);
+          console.log('🔍 Does it have prompts?', gdata[0]?.prompts);
+          console.log('🔍 Sample entry:', gdata[0]?.entries?.[0]);
+          console.log('🔍 Sample prompt:', gdata[0]?.prompts?.[0]);
+        }
         
         if (gdata.length === 0) {
-          console.log('⚠️ No guided journals found - checking if backend is working...');
-          // Let's try to create a test journal directly
-          try {
-            const testResponse = await fetch(`${API_BASE}/guided_journal/`, {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({
-                topic: "Test Journal - Debug",
-                prompts: [{ id: 1, text: "How are you?" }],
-                entries: [{ 
-                  prompt_id: 1, 
-                  prompt_text: "How are you?", 
-                  response: "Test response",
-                  created_at: new Date().toISOString()
-                }]
-              })
-            });
-            
-            if (testResponse.ok) {
-              console.log('✅ Test journal created successfully');
-              // Try fetching again
-              const retryResponse = await fetch(`${API_BASE}/guided_journal/`, { method: 'GET', headers });
-              if (retryResponse.ok) {
-                const retryData = await retryResponse.json();
-                console.log('🔄 Retry got:', retryData.length, 'journals');
-                if (retryData.length > 0) {
-                  gdata.push(...retryData);
-                }
-              }
-            } else {
-              console.log('❌ Test journal creation failed:', testResponse.status);
-            }
-          } catch (testError) {
-            console.log('💥 Test creation error:', testError);
-          }
+          console.log('⚠️ No guided journals found');
         }
         
         gdata.forEach((j, i) => {
-          console.log(`📝 Processing guided journal ${i}:`, j);
+          console.log(`📝 Processing guided journal ${i}:`, {
+            id: j.id,
+            topic: j.topic,
+            entriesCount: j.entries?.length || 0,
+            promptsCount: j.prompts?.length || 0
+          });
           
-          // Extract content from various possible structures
           let guidedContent = "";
           let entries = [];
+          let prompts = j.prompts || [];
           
-          // Try different data structures
-          if (j.entries && Array.isArray(j.entries)) {
+          // NEW FIX: Properly combine prompts with entries
+          if (j.entries && Array.isArray(j.entries) && prompts.length > 0) {
+            entries = j.entries;
+            
+            // Create a map for quick prompt lookup: prompt_id -> prompt_text
+            const promptMap = {};
+            prompts.forEach(prompt => {
+              promptMap[prompt.id] = prompt.text;
+            });
+            
+            // Build content by matching entries with prompts
+            guidedContent = j.entries.map(entry => {
+              const promptText = promptMap[entry.prompt_id] || `Prompt ${entry.prompt_id}`;
+              return `${promptText}:\n${entry.response || ''}`;
+            }).join('\n\n');
+            
+            console.log(`📋 Combined ${entries.length} entries with ${prompts.length} prompts`);
+            
+          } else if (j.entries && Array.isArray(j.entries)) {
+            // Fallback if we have entries but no prompts
             entries = j.entries;
             guidedContent = j.entries.map(entry => 
-              `${entry.prompt_text || entry.prompt || 'Prompt'}:\n${entry.response || entry.answer || ''}`
+              `Prompt ${entry.prompt_id || '?'}:\n${entry.response || ''}`
             ).join('\n\n');
-            console.log(`📋 Using entries structure: ${entries.length} entries`);
+            console.log(`📋 Using entries only (no prompts): ${entries.length} entries`);
+            
           } else if (j.answers && Array.isArray(j.answers)) {
+            // Old structure: answers array
             entries = j.answers.map((answer, idx) => ({
-              prompt_text: j.prompts && j.prompts[idx] ? j.prompts[idx].text : `Question ${idx + 1}`,
-              response: answer
+              prompt_id: idx + 1,
+              response: answer,
+              prompt_text: prompts[idx] ? prompts[idx].text : `Question ${idx + 1}`
             }));
             guidedContent = j.answers.join('\n\n');
             console.log(`📋 Using answers structure: ${j.answers.length} answers`);
-          } else if (j.journal_entries && Array.isArray(j.journal_entries)) {
-            entries = j.journal_entries;
-            guidedContent = j.journal_entries.map(entry => 
-              `${entry.prompt || 'Prompt'}:\n${entry.response || ''}`
-            ).join('\n\n');
-            console.log(`📋 Using journal_entries structure: ${j.journal_entries.length} entries`);
-          }
-          
-          // Fallback: try to extract any content we can find
-          if (!guidedContent) {
+            
+          } else {
+            // No entries found
             guidedContent = j.content || j.description || `Guided journal on topic: ${j.topic || 'Unknown'}`;
-            console.log('📋 Using fallback content');
+            console.log('📋 No entries found, using fallback');
           }
           
           const journalItem = {
@@ -178,9 +175,10 @@ const SavedJournals = () => {
             created_at: j.created_at || new Date().toISOString(),
             content: guidedContent,
             entries: entries,
+            prompts: prompts, // Store prompts for modal display
           };
           
-          console.log(`✅ Processed guided journal:`, journalItem);
+          console.log(`✅ Processed guided journal:`, journalItem.title);
           all.push(journalItem);
         });
       } else {
@@ -214,7 +212,12 @@ const SavedJournals = () => {
   };
 
   const openJournal = (j) => {
-    console.log('📖 Opening journal:', j);
+    console.log('📖 Opening journal:', {
+      title: j.title,
+      type: j.type,
+      entriesCount: j.entries?.length || 0,
+      promptsCount: j.prompts?.length || 0
+    });
     setSelectedJournal(j);
     setShowJournalModal(true);
     document.body.style.overflow = "hidden";
@@ -396,7 +399,7 @@ const SavedJournals = () => {
         )}
       </main>
 
-      {/* Modal - Improved for guided journals */}
+      {/* Modal - UPDATED for guided journals content display */}
       {showJournalModal && selectedJournal && (
         <div className="sj-modal-overlay" onClick={closeJournal} role="dialog" aria-modal="true">
           <div className="sj-modal" onClick={(e) => e.stopPropagation()}>
@@ -423,16 +426,26 @@ const SavedJournals = () => {
               <section className="sj-right-notebook">
                 <div className="sj-article">
                   {selectedJournal.type === "Guided Journal" && selectedJournal.entries && selectedJournal.entries.length > 0 ? (
-                    selectedJournal.entries.map((entry, idx) => (
-                      <div key={idx} className="sj-guided-entry">
-                        <h4 className="sj-prompt">
-                          {entry.prompt_text || entry.prompt || `Prompt ${idx + 1}`}
-                        </h4>
-                        <p className="sj-para">
-                          {entry.response || entry.answer || "No answer provided"}
-                        </p>
-                      </div>
-                    ))
+                    selectedJournal.entries.map((entry, idx) => {
+                      // Get prompt text from prompts array if available
+                      let promptText = entry.prompt_text || entry.prompt;
+                      
+                      if (!promptText && selectedJournal.prompts && Array.isArray(selectedJournal.prompts)) {
+                        const prompt = selectedJournal.prompts.find(p => p.id === entry.prompt_id);
+                        promptText = prompt ? prompt.text : `Prompt ${entry.prompt_id || idx + 1}`;
+                      }
+                      
+                      return (
+                        <div key={idx} className="sj-guided-entry">
+                          <h4 className="sj-prompt">
+                            {promptText || `Prompt ${idx + 1}`}
+                          </h4>
+                          <p className="sj-para">
+                            {entry.response || entry.answer || "No answer provided"}
+                          </p>
+                        </div>
+                      );
+                    })
                   ) : (selectedJournal.content && selectedJournal.content.trim()) ? (
                     selectedJournal.content.split("\n").map((p, idx) => (
                       <p key={idx} className="sj-para">{p || "\u00A0"}</p>

@@ -380,11 +380,12 @@ const startRecording = async () => {
 // Add this function to stop recording and send to backend
 const stopRecording = () => {
   if (mediaRecorder && mediaRecorder.state === 'recording') {
-    mediaRecorder.stop();
     setRecording(false);
-    setMode('write');
+    setTranscribing(true);   
+    mediaRecorder.stop();
   }
 };
+
 
 // Add this function to send audio to backend
 const sendAudioToBackend = async (audioBlob) => {
