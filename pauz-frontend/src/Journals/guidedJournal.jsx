@@ -19,7 +19,7 @@ const PLACEHOLDER_PROMPTS = [
 ];
 
 //const API_BASE = "http://localhost:8000";
-const API_BASE="http://155.138.238.152:8000"
+const API_BASE="https://pauz-3.onrender.com"
 const getAuthHeaders = () => {
   const token = localStorage.getItem("pauz_token");
   if (!token) return null;
