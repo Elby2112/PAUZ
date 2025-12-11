@@ -18,7 +18,8 @@ const Profile = () => {
   const [error, setError] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("pauz_user")) ?? {};
-  const API_BASE = "http://localhost:8000";
+  //const API_BASE = "http://localhost:8000";
+  const API_BASE="http://155.138.238.152:8000"
 
   useEffect(() => {
     fetchUserStats();
