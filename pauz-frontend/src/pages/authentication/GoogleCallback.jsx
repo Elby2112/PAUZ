@@ -15,20 +15,11 @@ function GoogleCallback() {
       const urlParams = new URLSearchParams(window.location.search);
 
       const token = urlParams.get("token");
-      const email = urlParams.get("email");
-      const name = urlParams.get("name");
       const error = urlParams.get("error");
       const code = urlParams.get("code");
       const state = urlParams.get("state");
 
-      console.log("🔍 URL Params:", {
-        token,
-        email,
-        name,
-        error,
-        code,
-        state,
-      });
+      console.log("🔍 URL Params:", { token, error, code, state });
 
       // ----------------------------------------
       // ❌ HANDLE BACKEND ERRORS
@@ -64,7 +55,6 @@ function GoogleCallback() {
           if (!response.ok) {
             const errData = await response.json();
             console.error("❌ /auth/token failed:", errData);
-
             alert(errData.detail || "Login failed during token exchange.");
             navigate("/");
             return;
@@ -99,17 +89,13 @@ function GoogleCallback() {
         // Save token
         localStorage.setItem("pauz_token", accessToken);
 
-        // Fetch full user info (email, name, picture)
-        //http://155.138.238.152:8000
+        // Fetch full user info from deployed backend
         const userResponse = await fetch("http://155.138.238.152:8000/auth/me", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         if (userResponse.ok) {
           const userData = await userResponse.json();
-
           console.log("🖼️ User data:", userData);
 
           localStorage.setItem(
