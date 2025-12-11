@@ -105,7 +105,8 @@ const Navbar = () => {
   }, []);
 
   const handleGoogleSignIn = () => {
-    window.location.href = "http://localhost:8000/auth/login";
+    //
+    window.location.href = "http://155.138.238.152:8000/auth/login";
   };
 
   const handleSignOut = () => {
