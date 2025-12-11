@@ -106,7 +106,7 @@ const Navbar = () => {
 
   const handleGoogleSignIn = () => {
     //
-    window.location.href = "http://155.138.238.152:8000/auth/login";
+    window.location.href = "https://pauz-3.onrender.com/auth/login";
   };
 
   const handleSignOut = () => {
