@@ -55,7 +55,7 @@ function GoogleCallback() {
         console.log("🔄 Using frontend token exchange flow...");
 
         try {
-          const response = await fetch("http://155.138.238.152:8000/auth/token", {
+          const response = await fetch("https://155.138.238.152:8000/auth/token", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code, state }),
@@ -100,8 +100,7 @@ function GoogleCallback() {
         localStorage.setItem("pauz_token", accessToken);
 
         // Fetch full user info (email, name, picture)
-        //http://155.138.238.152:8000
-        const userResponse = await fetch("http://155.138.238.152:8000/auth/me", {
+        const userResponse = await fetch("https://155.138.238.152:8000/auth/me", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
