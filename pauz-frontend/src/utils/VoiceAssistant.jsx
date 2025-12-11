@@ -3,7 +3,8 @@ import "../styles/voiceAssistant.css";
 import micIcon from "../assets/icons/microphone.png";
 import closeIcon from "../assets/icons/close.png";
 
-const API_BASE = "http://localhost:8000";
+//const API_BASE = "http://localhost:8000";
+const API_BASE="http://155.138.238.152:8000"
 
 const VoiceAssistantVoiceOnly = ({ isVisible, onClose }) => {
   const [mode, setMode] = useState("idle"); // idle | listening | thinking | speaking | error
