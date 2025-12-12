@@ -98,7 +98,7 @@ Once both frontend and backend are running:
 * **PDF Export:** Save and download your journal entries as PDFs.
 
 ---
-
+![Architechture](pauz-frontend/src/assets/Architechture.png)
 
 
 ## ⚖️ **License**
