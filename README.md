@@ -38,7 +38,7 @@ Before running PauZ, ensure you have:
 
     ```bash
     git clone [https://github.com/Elby2112/pauz.git](https://github.com/Elby2112/pauz.git)
-    cd pauz/pauz-backend
+    cd pauz-backend
     ```
 
 2.  **Install Python Dependencies**
