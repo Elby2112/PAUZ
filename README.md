@@ -3,7 +3,7 @@
 PauZ is an AI-driven journaling assistant designed to help you build a journaling habit, track your mood, and reflect on your emotional world. Leveraging LiquidMetal AI and Vultr technologies, PauZ provides free-form journaling, guided/prompts journaling, voice journaling, and mood tracking & analysis.
 
 ![Free Journal](pauz-frontend/src/assets/freejournal.png)
-![Prompts Journal](pauz-frontend/src/assets/promptsjournal.png)
+![Prompts Journal](pauz-frontend/src/assets/prompts-journal.png)
 ![Garden](pauz-frontend/src/assets/garden.png)
 ![Journal Sample](pauz-frontend/src/assets/journnal-sample.png)
 ## 📖 **Table of Contents**
