@@ -2,7 +2,7 @@
 
 PauZ is an AI-driven journaling assistant designed to help you build a journaling habit, track your mood, and reflect on your emotional world. Leveraging LiquidMetal AI and Vultr technologies, PauZ provides free-form journaling, guided/prompts journaling, voice journaling, and mood tracking & analysis.
 
-![Free Journal](src/assets/freejournal.png)
+![Free Journal](pauz-frontend/src/assets/freejournal.png)
 ![Prompts Journal](src/assets/promptsjournal.png)
 ![Garden](src/assets/garden.png)
 
@@ -37,8 +37,8 @@ Before running PauZ, ensure you have:
 1.  **Clone the Repository**
 
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/pauz.git](https://github.com/YOUR_USERNAME/pauz.git)
-    cd pauz
+    git clone [https://github.com/Elby2112/pauz.git](https://github.com/Elby2112/pauz.git)
+    cd pauz/pauz-backend
     ```
 
 2.  **Install Python Dependencies**
