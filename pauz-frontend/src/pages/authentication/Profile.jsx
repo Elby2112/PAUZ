@@ -19,7 +19,7 @@ const Profile = () => {
 
   const user = JSON.parse(localStorage.getItem("pauz_user")) ?? {};
   //const API_BASE = "http://localhost:8000";
-  const API_BASE="https://pauz-3.onrender.com"
+  const API_BASE="https://pauz-3.onrender.com";
 
   useEffect(() => {
     fetchUserStats();

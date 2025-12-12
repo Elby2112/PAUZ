@@ -1,4 +1,4 @@
-# PAUZ Backend Architecture
+r# PAUZ Backend Architecture
 
 This document provides a comprehensive overview of the backend architecture for the PAUZ journaling application. It details the core components, data flow, and how the application leverages Raindrop's SmartBuckets and other AI-powered features.
 

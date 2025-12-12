@@ -26,3 +26,14 @@ client_secret.json
 
 # Database
 database.db
+
+# JS and JSX files
+*.js
+*.jsx
+
+# Markdown files
+*.md
+!README.md
+
+# CSS files
+*.css

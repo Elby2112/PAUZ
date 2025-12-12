@@ -153,11 +153,11 @@ const Navbar = () => {
 
                 <Link to="/garden" className="dropdown-item"><img src={gardenIcon} /> My Garden</Link>
 
-                <a href="https://youtu.be/..." target="_blank" className="dropdown-item">
+                <a href="https://youtu.be/vQgk3l4Avk4" target="_blank" className="dropdown-item">
                   <img src={videoIcon} /> Introduction Video
                 </a>
 
-                <a href="https://github.com/..." target="_blank" className="dropdown-item">
+                <a href="https://github.com/Elby2112/PAUZ" target="_blank" className="dropdown-item">
                   <img src={githubIcon} /> GitHub
                 </a>
               </div>
