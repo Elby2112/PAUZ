@@ -1,195 +1,109 @@
-# **PauZ** - Journaling AI Assistant 
+# 🌟 **PauZ** - Journaling AI Assistant
 
-Prospera is an AI-driven application designed to help you journal confidently, built the habit, track your mood and reflect on your emotional world!. Leveraging Liquidmetal Technologies , PauZ provides free journaling, guided/prompts journaling, voice Journaling and mood tracking and analysis.
+PauZ is an AI-driven journaling assistant designed to help you build a journaling habit, track your mood, and reflect on your emotional world. Leveraging LiquidMetal AI and Vultr technologies, PauZ provides free-form journaling, guided/prompts journaling, voice journaling, and mood tracking & analysis.
 
-![free journal](assets/freejournal.png)
+![Free Journal](src/assets/freejournal.png)
+![Prompts Journal](src/assets/promptsjournal.png)
+![Garden](src/assets/garden.png)
 
-![prompts journal](assets/prompts-journal.png)
-
-![garden](garden.png)
-## **Table of Contents**
+## 📖 **Table of Contents**
 
 1. [Prerequisites](#prerequisites)
 2. [Installation and Setup](#installation-and-setup)
 3. [Usage](#usage)
-4. [Testing Prospera](#testing-prospera)
-5. [Project Structure](#project-structure)
-6. [Built With](#built-with)
-7. [Contributing](#contributing)
-8. [License](#license)
+4. [Built With](#built-with)
+5. [License](#license)
 
 ---
-## **Prerequisites**
 
-To get started with Prospera, make sure you have the following installed:
+## ✅ **Prerequisites**
 
-1. **Docker**: Get Docker
-2. **Docker Compose**: Verify with `docker-compose --version` (Docker Compose is included with Docker Desktop)
-3. **Make**: Installing Make
-4. **Google API Key**: Have a [Google API Key](https://aistudio.google.com/app/apikey) and add it to the `.env` file (see below).
+Before running PauZ, ensure you have:
 
-## **Installation and Setup**
+1.  **Python 3.10+**
+2.  **pip** (Python package manager)
+3.  A **Google API Key** for OAuth2
+4.  **Vultr API keys** for storage
+5.  **ElevenLabs API key** for voice journaling
+6.  **Raindrop credentials** (organization, SmartBuckets, SmartMemory)
+7.  **Google Gemini API key** for AI prompt generation
 
-### 1. Clone the Repository
+---
 
-Clone the repository and navigate into the project directory:
+## 🛠️ **Installation and Setup**
 
-```bash
-git clone https://github.com/doniacld/prospera.git
-cd prospera
-```
+### **Installation Steps**
 
-### 2. Configure Environment Variables
-
-Prospera requires specific environment variables for API keys and configuration. Follow these steps to set up your environment:
-
-1. Create a `.env` file in the project root:
+1.  **Clone the Repository**
 
     ```bash
-    cp .env.example .env
+    git clone [https://github.com/YOUR_USERNAME/pauz.git](https://github.com/YOUR_USERNAME/pauz.git)
+    cd pauz
     ```
 
-2. Open `.env` and configure the required values:
-    ```
-    API_KEY=your_google_api_key_here
-    ANOTHER_VARIABLE=another_value
-    ```
-
-
-### 3. Running Prospera
-
-### Option A: Run with Docker (Recommended)
-
-To build and run both backend and frontend containers:
-
-```bash
-make docker-up
-```
-
-To stop the containers:
-
-```bash
-make docker-down
-```
-
-### Option B: Run Locally Without Docker
-
-To run each service locally, you can use the following commands:
-
-1. **Start the Backend**:
+2.  **Install Python Dependencies**
 
     ```bash
-    make run-backend
+    pip install -r requirements.txt
     ```
 
-2. **Start the Frontend**:
+3.  **Configure Environment Variables**
+
+    Create a `.env` file in the project root and add the following variables:
+
+    ```env
+    GOOGLE_CLIENT_ID=your_google_client_id
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+    REDIRECT_URI=your_redirect_uri
+    VULTR_ACCESS_KEY=your_vultr_access_key
+    VULTR_SECRET_KEY=your_vultr_secret_key
+    VULTR_REGION=your_vultr_region
+    VULTR_BUCKET_NAME=your_vultr_bucket_name
+    ELEVENLABS_API_KEY=your_elevenlabs_api_key
+    JWT_SECRET_KEY=your_jwt_secret
+    JWT_ALGORITHM=HS256
+    RAINDROP_ORG=your_raindrop_organization
+    SMARTBUCKET_NAME=your_smartbucket_name
+    APPLICATION_NAME=pauz-journaling
+    AI_API_KEY=your_ai_api_key
+    GEMINI_API_KEY=your_google_gemini_api_key
+    ```
+
+4.  **Run the Backend**
 
     ```bash
-    make run-frontend
+    uvicorn app.main:app --reload
     ```
+    Backend will be available at: `http://127.0.0.1:8000`
 
-3. **Stopping Services Locally**:
+5.  **Run the Frontend**
 
     ```bash
-    make kill-local
+    cd pauz-frontend
+    npm install
+    npm run dev
     ```
+    Frontend will run on the default Vite URL, usually `http://localhost:5173`
 
 ---
 
-## **Usage**
+## 🚀 **Usage**
 
-Once Prospera is running, you can access the application through your browser:
+Once both frontend and backend are running:
 
-- **Frontend**: Visit `http://localhost:3000`
-- **Backend API**: Available at `http://localhost:8080`
-
-### Features to Explore
-
-- **Salary Benchmarking**: Fill out the input form to receive real-time salary insights.
-
-![input](assets/2_input_information.png)
-![input](assets/3_salary_benchmark_chat.png)
-![input](assets/6_results.png)
-
-- **Negotiation Coach Chat**: Engage in a real-time chat to practice negotiation scenarios. 
-![input](assets/4_negotiation_coach_chat.png)
-
-- **Tips Chat**: Interact with Prospera’s AI-driven coach for personalized advice.
-![input](assets/5_boost_confidence_chat.png)
+* **Free Journaling:** Write freely or use AI-generated hints if stuck. Hints can also be read aloud with ElevenLabs voice.
+* **Guided Journaling:** Choose a topic and get AI-generated prompts to reflect on.
+* **Voice Journaling:** Speak your entries and let AI transcribe & analyze mood.
+* **Mood Tracking (Garden):** Track your mood visually with flowers representing different emotions.
+* **PDF Export:** Save and download your journal entries as PDFs.
 
 ---
 
-## **Testing Prospera**
 
-### Step-by-Step Testing Guide
 
-1. **Input Form**: Use the form on the frontend to input salary details, experience, location, and more. Submit the form to get a salary benchmarking response.
-2. **Negotiation Coaching**: Access the negotiation coach to receive interactive guidance. The backend processes responses in real-time using WebSocket, simulating a live conversation.
-3. **Chat Interface**: Test the WebSocket functionality by engaging in a back-and-forth conversation with the AI, ensuring seamless real-time responses.
+## ⚖️ **License**
 
-### Viewing Logs
-
-- **Docker logs**: Use `docker-compose logs -f` to monitor backend and frontend logs while testing.
-- **Local logs**: When running locally, logs will appear in each terminal window where the backend and frontend are running.
-
----
-
-## **Project Structure**
-
-Here’s an overview of the main files and directories:
-
-```
-plaintext
-Copier le code
-prospera/
-├── app/                   # Go backend
-│   ├── main.go            # Backend entry point
-│   ├── Dockerfile         # Backend Dockerfile
-│   └── ...
-├── prospera-app/          # React frontend
-│   ├── src/               # React source code
-│   ├── Dockerfile         # Frontend Dockerfile
-│   └── ...
-├── docker-compose.yml     # Docker Compose configuration
-├── Makefile               # Makefile for easy setup and testing
-├── .env.example           # Example environment file
-└── README.md              # Project documentation
-
-```
-The full architecture looks like this
-![input](assets/architecture_overview.png)
-
----
-
-## **Built With**
-
-![input](assets/built_with_tech.png)
-
-- **Go**: Backend API and WebSocket server
-- **React**: Frontend UI
-- **Google Gemini AI**: AI-driven negotiation assistance
-- **Docker & Docker Compose**: Containerized environment for easy deployment
-- **Make**: Simplifies running and managing local and Docker environments
-
----
-
-## **Contributing**
-
-Contributions are welcome! Please follow these steps if you would like to contribute to Prospera:
-
-1. Fork the repository
-2. Create a new feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
-
----
-
-## **License**
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
+This project is licensed under the MIT License - see the `LICENSE` file for details.
 
 ## **Contact**
 
